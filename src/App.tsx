@@ -93,8 +93,8 @@ interface Theme {
 
 const THEMES: Theme[] = [
   {
-    id: 'quantum',
-    name: 'Quantum (Default)',
+    id: 'base',
+    name: 'Ge-Linux (Default)',
     accent: '#3fb950',
     bg: '#0c0c0c',
     bgGradientStart: '#1a1a1a',
@@ -193,7 +193,7 @@ export default function App() {
   const [accentColor, setAccentColor] = useState(savedSettings.accentColor ?? '#3fb950');
   const [systemVolume, setSystemVolume] = useState(savedSettings.systemVolume ?? 80);
   const [bootSoundEnabled, setBootSoundEnabled] = useState(savedSettings.bootSoundEnabled ?? true);
-  const [currentThemeId, setCurrentThemeId] = useState(savedSettings.currentThemeId ?? 'quantum');
+  const [currentThemeId, setCurrentThemeId] = useState(savedSettings.currentThemeId ?? 'base');
 
   // Persist settings to localStorage
   useEffect(() => {
@@ -591,8 +591,8 @@ export default function App() {
               <div className="flex flex-col gap-0.5">
                 <div className="text-accent font-bold">user@ge-linux</div>
                 <div className="h-px bg-accent/30 my-1" />
-                <div><span className="text-accent font-bold">OS:</span> Ge-Linux v1.0.0</div>
-                <div><span className="text-accent font-bold">Kernel:</span> 6.8.0-ge-linux</div>
+                <div><span className="text-accent font-bold">OS:</span> Ge-Linux Beta v1.0.0</div>
+                <div><span className="text-accent font-bold">Kernel:</span> 6.8.0-ge-linux-beta</div>
                 <div><span className="text-accent font-bold">Uptime:</span> {Math.floor(performance.now() / 1000)}s</div>
                 <div><span className="text-accent font-bold">Shell:</span> ge-sh 1.0</div>
                 <div className="flex gap-1 mt-1">
@@ -644,7 +644,7 @@ export default function App() {
         response = { type: 'text', content: textOutput };
         break;
       case 'uname':
-        textOutput = "Linux ge-linux 6.8.0-ge-linux #1 SMP PREEMPT_DYNAMIC Mon Mar 30 2026 x86_64 GNU/Linux";
+        textOutput = "Linux ge-linux 6.8.0-ge-linux-beta #1 SMP PREEMPT_DYNAMIC Mon Apr 21 2026 x86_64 GNU/Linux";
         response = { type: 'text', content: textOutput };
         break;
       case 'top':
@@ -654,19 +654,23 @@ export default function App() {
         return;
       case 'dmesg':
         const dmesgLogs = [
-          '[    0.000000] Linux version 6.8.0-ge-linux-quantum',
-          '[    0.124512] Command line: BOOT_IMAGE=/boot/vmlinuz-6.8.0 root=UUID=ge-linux-root',
-          '[    0.451241] CPU: Intel(R) Core(TM) i9-14900KS (Virtual)',
-          '[    0.890124] PCI: Probing PCI hardware',
-          '[    1.241251] NET: Registered protocol family 2 (IPv4)',
-          '[    1.567124] rtc_cmos 00:01: setting system clock to 2026-04-21',
-          '[    2.124251] EXT4-fs (sda1): mounted filesystem with ordered data mode',
-          '[    3.890124] systemd[1]: Inserted module \'autofs4\'',
-          '[    4.241124] Ge-Linux Desktop 1.0.0 initializing...',
-          '[    5.567124] Input: Ge-Virtual Mouse v1.1',
-          '[    6.124512] Audio: Ge-Pulse sound server ready'
+          '[    0.000000] initial-ramdisk: Ge-Linux Kernel 6.8.0-ge-linux-quantum initializing',
+          '[    0.000001] ACPI: Core revision 20240421',
+          '[    0.124512] Command line: BOOT_IMAGE=/boot/vmlinuz-6.8.0-beta root=UUID=ge-linux-root ro quiet splash',
+          '[    0.281241] Memory: 8192MB/8192MB available (14340K kernel code, 2314K rwdata, 4512K rodata, 2392K init, 1241K bss, 642MB reserved)',
+          '[    0.451241] CPU: Intel(R) Core(TM) i9-14900KS (Virtual-X86 Platform)',
+          '[    0.681241] smp: Bringing up secondary CPUs...',
+          '[    0.890124] PCI: Probing PCI hardware (bus 00 [io 0x0000-0xffff])',
+          '[    1.241251] NET: Registered protocol family 2 (IPv4) / Initializing TCP/IP stack',
+          '[    1.567124] rtc_cmos 00:01: current system clock synchronized to Stratum-1 server',
+          '[    2.124251] EXT4-fs (sda1): recovery complete, mount successful',
+          '[    3.890124] systemd[1]: systemd 255.4-1-ge-linux running in system mode',
+          '[    4.241124] Ge-Desktop Environment 1.0.0-beta-1 status: OK',
+          '[    5.567124] hid-generic: Registered human interface device (001:002)',
+          '[    6.124512] Audio/ALSA: Ge-Pulse sound architecture initialized',
+          '[    6.451241] Ge-Linux Beta Core (Build 20240421-1755) is ready'
         ].join('\n');
-        response = { type: 'text', content: <pre className="font-mono text-[10px] text-white/60 lowercase">{dmesgLogs}</pre> };
+        response = { type: 'text', content: <pre className="font-mono text-[10px] text-white/50 leading-relaxed">{dmesgLogs}</pre> };
         break;
       case 'ps':
         const psOutput = [
@@ -791,7 +795,7 @@ export default function App() {
         break;
       case 'curl':
         const curlUrl = args[1] || 'http://ge-linux.org';
-        textOutput = `HTTP/1.1 200 OK\nContent-Type: text/html\nContent-Length: 124\n\n<html>\n<head><title>Ge-Linux</title></head>\n<body>Welcome to Ge-Linux Quantum Edition</body>\n</html>`;
+        textOutput = `HTTP/1.1 200 OK\nContent-Type: text/html\nContent-Length: 124\n\n<html>\n<head><title>Ge-Linux</title></head>\n<body>Welcome to Ge-Linux Beta Edition</body>\n</html>`;
         response = { type: 'text', content: <pre className="mt-2 font-mono text-[10px] text-accent/80">{textOutput}</pre> };
         break;
       case 'wget':
@@ -1099,8 +1103,8 @@ export default function App() {
               <ShieldAlert size={12} /> Diagnostic Stack Trace
             </div>
             <TypewriterText text={`[0.000000] Kernel panic - not syncing: ${panicDetails || 'Attempted to kill init!'}`} delay={1.2} />
-            <TypewriterText text="[0.000000] CPU: 0 PID: 1 Comm: systemd Not tainted 6.8.0-ge-linux-quantum" delay={1.4} />
-            <TypewriterText text="[0.000000] Hardware name: Ge-Linux Quantum Processor / Virtual-X86 Platform" delay={1.6} />
+            <TypewriterText text="[0.000000] CPU: 0 PID: 1 Comm: systemd Not tainted 6.8.0-ge-linux-beta" delay={1.4} />
+            <TypewriterText text="[0.000000] Hardware name: Ge-Linux Processor / Virtual-X86 Platform" delay={1.6} />
             <TypewriterText text={`[0.000000] Error Code: ${panicData.hex} (STOP_${panicData.code})`} delay={1.8} />
             <TypewriterText text="[0.000000] Stack Frame: 0xffff888001000000 / IP: 0xffffffff81000000" delay={1.9} />
             <TypewriterText text="[0.000000] Core Dump Status: INITIALIZING..." delay={2.5} />
@@ -1138,7 +1142,7 @@ export default function App() {
                 If this is the first time you've seen this Stop error screen, restart your virtual machine. Ge-Linux will attempt a memory scrub on next boot. Failure to recover may require manual CMOS reset in the BIOS shell.
               </p>
               <div className="flex flex-col gap-1">
-                <p className="text-[10px] text-white/20">Contact Quantum Support with code: GE_LINUX_{panicData.code}</p>
+                <p className="text-[10px] text-white/20">Contact System Support with code: GE_LINUX_{panicData.code}</p>
                 <p className="text-[8px] text-white/10 uppercase tracking-widest">Digital Signature: {Math.random().toString(36).substring(2, 15).toUpperCase()}</p>
               </div>
             </div>
@@ -1185,7 +1189,6 @@ export default function App() {
     <div className="min-h-screen relative overflow-hidden crt-overlay select-none">
       <div className="desktop-bg" />
       <div className="scanline" />
-      <div className="prototype-watermark">PROTOTYPE - DO NOT LEAK</div>
 
       {/* Start Menu (Raspberry Pi Style) */}
       <AnimatePresence>
@@ -1380,7 +1383,7 @@ export default function App() {
         </div>
 
         <div className="flex items-center gap-6">
-          <div className="leak-warning">PROTOTYPE ONLY - DO NOT LEAK</div>
+          <div className="system-tag rounded-sm text-[8px] tracking-widest font-black">BETA BUILD</div>
           <div className="flex items-center gap-4 text-[10px] font-bold text-accent/70">
             <div className="flex items-center gap-1"><Network size={12} /> 124 KB/s</div>
             <div className="flex items-center gap-1"><Cpu size={12} /> 12%</div>
@@ -1509,9 +1512,9 @@ function Installer({ onComplete }: { onComplete: () => void }) {
         <div className="h-12 bg-white/5 border-b border-white/10 flex items-center px-6 justify-between">
           <div className="flex items-center gap-2">
             <Monitor size={18} className="text-accent" />
-            <span className="text-xs font-bold uppercase tracking-[0.2em] text-white/70">Ge-Linux Installer v1.0</span>
+            <span className="text-xs font-bold uppercase tracking-[0.2em] text-white/70">Ge-Linux Installer v1.0.0-beta</span>
           </div>
-          <div className="leak-warning">PROTOTYPE INSTALLER</div>
+          <div className="system-tag rounded-sm text-[8px] tracking-widest font-black">BETA BUILD</div>
         </div>
 
         <div className="flex-1 flex">
@@ -1540,8 +1543,8 @@ function Installer({ onComplete }: { onComplete: () => void }) {
                 <motion.div key="step0" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="flex-1">
                   <h2 className="text-4xl font-black tracking-tighter uppercase italic mb-4">Ready to Evolve?</h2>
                   <p className="text-white/60 text-sm leading-relaxed mb-8">
-                    You are about to install Ge-Linux, the most advanced web-based operating system prototype. 
-                    This process will configure your virtual environment for peak performance.
+                    You are about to install Ge-Linux Beta, the next evolution in web-based operating system architecture. 
+                    This process will configure your virtual environment for peak desktop performance.
                   </p>
                   <div className="p-4 bg-accent/10 border border-accent/20 rounded-xl mb-8">
                     <p className="text-xs font-bold text-accent italic">"Performance is not an option, it's a requirement."</p>
@@ -1742,7 +1745,7 @@ function AboutApp() {
             <Monitor size={56} />
           </div>
           <h1 className="text-4xl font-black tracking-tighter uppercase italic">Ge-Linux</h1>
-          <p className="text-accent font-bold text-sm tracking-widest uppercase opacity-80 mt-1">Version 1.0.0-stable</p>
+          <p className="text-accent font-bold text-sm tracking-widest uppercase opacity-80 mt-1">Version 1.0.0-beta</p>
         </div>
 
         <div className="space-y-6 text-left">
@@ -1830,8 +1833,8 @@ function WelcomeApp({ onOpenAbout }: { onOpenAbout: () => void }) {
             <Monitor size={40} />
           </div>
           <div>
-            <h1 className="text-3xl font-black tracking-tighter uppercase italic">Welcome to Ge-Linux</h1>
-            <p className="text-accent font-bold text-xs tracking-widest uppercase opacity-80">The Ultimate Web-Based Distro</p>
+            <h1 className="text-3xl font-black tracking-tighter uppercase italic">Welcome to Ge-Linux Beta</h1>
+            <p className="text-accent font-bold text-xs tracking-widest uppercase opacity-80">The Ultimate Web-Based Computing Platform</p>
           </div>
         </div>
 
@@ -1841,8 +1844,8 @@ function WelcomeApp({ onOpenAbout }: { onOpenAbout: () => void }) {
               <Info size={20} /> Overview
             </h2>
             <p className="text-sm text-white/60 leading-relaxed">
-              Ge-Linux is a high-performance, minimalist distribution built entirely on web technologies. 
-              It features a custom window manager, a real-time terminal, and integrated productivity tools.
+              Ge-Linux Beta is a professional-grade, high-performance operating system simulation. 
+              It features technical-grade kernel diagnostics, advanced process forensics, and a robust terminal environment.
             </p>
           </div>
           <div className="bg-white/5 p-6 rounded-xl border border-white/10 hover:border-accent/30 transition-colors">
@@ -2031,7 +2034,7 @@ function StartMenu({ onClose, onToggleWindow, onSetMode }: { onClose: () => void
           </div>
           <div>
             <div className="text-xs font-bold tracking-tight">Ge-Linux User</div>
-            <div className="text-[8px] text-accent/50 uppercase tracking-widest font-black">Quantum Edition</div>
+            <div className="text-[8px] text-accent/50 uppercase tracking-widest font-black">Beta Build</div>
           </div>
         </div>
         <div className="relative w-48">
@@ -2768,7 +2771,7 @@ function BrowserViewport({ url, tabId }: { url: string, tabId: string }) {
             <div className="h-4 bg-gray-100 rounded w-3/4 animate-pulse" />
           </div>
           <div className="mt-12 p-6 bg-accent/5 border border-accent/20 rounded-lg text-center">
-            <p className="text-xs text-accent font-bold uppercase mb-2">Quantum Reader Engine</p>
+            <p className="text-xs text-accent font-bold uppercase mb-2">Alpha Reader Engine</p>
             <p className="text-[10px] text-gray-500">The page content is being processed by our neural parser. Some elements may be missing.</p>
           </div>
         </div>
@@ -2781,7 +2784,7 @@ function BrowserViewport({ url, tabId }: { url: string, tabId: string }) {
       {isLoading && (
         <div className="absolute inset-0 z-20 bg-white flex flex-col items-center justify-center gap-4">
           <div className="w-8 h-8 border-2 border-accent border-t-transparent rounded-full animate-spin" />
-          <div className="text-[10px] font-bold text-accent uppercase tracking-widest animate-pulse">Initializing Quantum Engine...</div>
+          <div className="text-[10px] font-bold text-accent uppercase tracking-widest animate-pulse">Initializing Core Engine...</div>
         </div>
       )}
 
@@ -3066,7 +3069,7 @@ function BrowserApp({ onClose, onMinimize, onMaximize }: { onClose: () => void, 
           <div className="w-2 h-2 rounded-full bg-accent animate-pulse ml-2" />
           <div className="flex items-center gap-2 px-2 py-1 bg-black/20 rounded border border-white/5 group relative cursor-help">
             <Shield size={10} className="text-accent" />
-            <span className="text-[7px] font-bold text-white/40 uppercase tracking-tighter">Quantum v1.1</span>
+            <span className="text-[7px] font-bold text-white/40 uppercase tracking-tighter">Core Engine v1.1-Beta</span>
             <div className="absolute top-full right-0 mt-2 w-48 p-3 bg-[#2d2d2d] border border-white/10 rounded shadow-2xl opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-[60]">
               <p className="text-[9px] font-bold text-accent mb-1 uppercase">Engine Diagnostics</p>
               <p className="text-[8px] text-white/50 leading-tight">Using Object-HTML fallback engine to bypass standard iframe restrictions. If a site fails, use the Maximize icon to launch externally.</p>
@@ -3083,7 +3086,7 @@ function BrowserApp({ onClose, onMinimize, onMaximize }: { onClose: () => void, 
         {/* Overlay for sites that block iframes */}
         <div className="absolute top-2 right-2 flex flex-col items-end gap-2 pointer-events-none z-50">
           <div className="p-2 bg-black/80 rounded text-[8px] text-white/50 backdrop-blur-md border border-white/5">
-            GE-Lunweb v1.1 | Quantum Engine
+            GE-Lunweb v1.1 | Core Engine
           </div>
         </div>
       </div>

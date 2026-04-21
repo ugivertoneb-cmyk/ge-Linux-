@@ -1,0 +1,5 @@
+{
+  "name": "Ge-Linux",
+  "description": "An immersive web-based simulation of the Ge-Linux operating system, featuring a functional terminal and custom system utilities.",
+  "requestFramePermissions": []
+}

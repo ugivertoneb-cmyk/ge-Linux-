@@ -20,21 +20,57 @@ async function startServer() {
     try {
       const response = await fetch(targetUrl, {
         headers: {
-          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+          'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
+          'Accept-Language': 'en-US,en;q=0.9',
         }
       });
       
+      if (!response.ok) {
+        return res.status(response.status).send(`Upstream error: ${response.statusText}`);
+      }
+
       const contentType = response.headers.get('content-type');
+      
+      // If it's not HTML, just pipe it through
+      if (!contentType || !contentType.includes('text/html')) {
+        const arrayBuffer = await response.arrayBuffer();
+        res.setHeader('Content-Type', contentType || 'application/octet-stream');
+        return res.send(Buffer.from(arrayBuffer));
+      }
+
       let body = await response.text();
 
-      // Inject <base> tag so relative links work
+      // Inject frame buster protection and base tag
       const baseUrl = new URL(targetUrl).origin;
-      body = body.replace('<head>', `<head><base href="${baseUrl}/">`);
+      const baseTag = `<base href="${baseUrl}/">`;
+      const frameBusterProtection = `
+<script>
+  (function() {
+    try {
+      Object.defineProperty(window, 'top', { get: function() { return window; } });
+      Object.defineProperty(window, 'parent', { get: function() { return window; } });
+      window.top.location = window.location; // Trick frame busters
+    } catch (e) {}
+  })();
+</script>
+`;
+      
+      const injection = baseTag + frameBusterProtection;
+      
+      if (body.match(/<head[^>]*>/i)) {
+        body = body.replace(/(<head[^>]*>)/i, `$1${injection}`);
+      } else if (body.match(/<html[^>]*>/i)) {
+        body = body.replace(/(<html[^>]*>)/i, `$1<head>${injection}</head>`);
+      } else {
+        body = injection + body;
+      }
       
       // Strip security headers that block iframes
-      res.setHeader('Content-Type', contentType || 'text/html');
+      res.setHeader('Content-Type', 'text/html');
       res.setHeader('X-Frame-Options', 'ALLOWALL');
-      res.setHeader('Content-Security-Policy', "default-src * 'unsafe-inline' 'unsafe-eval'; frame-ancestors *;");
+      res.setHeader('Content-Security-Policy', "default-src * 'unsafe-inline' 'unsafe-eval' data: blob:; frame-ancestors *;");
+      res.setHeader('Access-Control-Allow-Origin', '*');
       
       res.send(body);
     } catch (error) {

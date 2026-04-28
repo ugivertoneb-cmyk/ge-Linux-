@@ -1,5 +1,8 @@
 {
-  "name": "Ge-Linux Beta",
-  "description": "The next generation of web-based operating system simulations. Ge-Linux Beta features high-fidelity kernel diagnostics, professional process management, and an immersive system experience.",
-  "requestFramePermissions": []
+  "name": "Ge-Linux v2.0 Beta",
+  "description": "Ge-Linux v2.0.0-Beta: The ultimate web-based OS simulation. Featuring advanced kernel forensics, high-performance process management, and a professional terminal environment.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
 }

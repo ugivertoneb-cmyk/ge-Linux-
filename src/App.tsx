@@ -8,12 +8,13 @@ import { motion, AnimatePresence } from 'motion/react';
 import YouTube from 'react-youtube';
 import { 
   Terminal as TerminalIcon, Cpu, HardDrive, Network, Shield, Package, 
-  Info, HelpCircle, X, ChevronRight, Monitor, Activity, Folder, 
+  Info, HelpCircle, X, ChevronUp, ChevronDown, ChevronLeft, ChevronRight, Monitor, Activity, Folder, 
   Settings, User, Calendar, Clock, Search, Layout, Maximize2, 
   Minimize2, Power, Play, FileText, Gamepad2, Save, Edit3, 
   Volume2, SkipBack, SkipForward, Pause, Globe, ArrowLeft, ArrowRight, RotateCw, Home,
   Video, File, Heart, Plus, History, AlertTriangle, ExternalLink, ShieldAlert,
-  Code, Briefcase, Gamepad, Wrench, LogOut, Terminal, Layers, AppWindow, Palette
+  Code, Briefcase, Gamepad, Wrench, LogOut, Terminal, Layers, AppWindow, Palette, Cloud,
+  Download, Camera, Pencil, Eraser, Square, Circle, Type, Trash2
 } from 'lucide-react';
 
 type CommandResponse = {
@@ -48,7 +49,7 @@ const INITIAL_BOOT_LOGS = [
   "[    0.000000] BIOS-e820: [mem 0x000000000009fc00-0x000000000009ffff] reserved",
   "[    0.000000] BIOS-e820: [mem 0x00000000000f0000-0x00000000000fffff] reserved",
   "[    0.000000] BIOS-e820: [mem 0x0000000000100000-0x00000000bfffffff] usable",
-  "[    0.124512] smpboot: Allowing 8 CPUs, 0 hotplug CPUs",
+  "[    0.124512] smpboot: Allowing 16 CPUs, 0 hotplug CPUs",
   "[    0.256781] ACPI: Core revision 20230628",
   "[    0.512344] pci 0000:00:00.0: [8086:191f] type 00 class 0x060000",
   "[    0.891231] scsi host0: virtio-scsi",
@@ -60,11 +61,11 @@ const INITIAL_BOOT_LOGS = [
   "[    3.102345] systemd[1]: Started Ge-Linux Desktop Manager.",
   " ",
   "****************************************************",
-  "*  CONFIDENTIAL PROTOTYPE - INTERNAL USE ONLY      *",
-  "*  DO NOT REVEAL OR LEAK UNDER PENALTY OF LAW      *",
+  "*  GE-LINUX BETA RELEASE - BUILD 26.4.28          *",
+  "*  OFFICIAL DISTRIBUTION - PUBLIC BETA v2.0.0     *",
   "****************************************************",
   " ",
-  "Welcome to Ge-Linux v1.0.0 LTS (Kernel 6.8.0-ge-linux)",
+  "Welcome to Ge-Linux v2.0.0 Beta (Kernel 7.2.0-ge-linux)",
   "Type 'help' for a list of available commands.",
   "Type 'startx' to launch the Ge-Desktop environment."
 ];
@@ -72,7 +73,7 @@ const INITIAL_BOOT_LOGS = [
 const INITIAL_FILE_SYSTEM: Record<string, string> = {
   'README.md': '# Ge-Linux\n\nThe ultimate minimalist distribution for the modern web.',
   'about.txt': 'Ge-Linux is a community-driven distribution focused on performance and simplicity.',
-  'version.info': 'Ge-Linux 1.0.0-stable\nBuild: 20260330\nCodename: "Vibrant"',
+  'version.info': 'Ge-Linux 2.0.0-beta\nBuild: 20260428\nCodename: "Quantum-Next"',
   'secret.key': 'GE-LINUX-PRO-2026-X99-ALPHA',
   'intro.mp4': 'https://vjs.zencdn.net/v/oceans.mp4',
   'demo.mp4': 'https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'
@@ -241,6 +242,14 @@ export default function App() {
     { id: 'welcome', title: 'Welcome', icon: <Info size={16} />, isOpen: false, isMinimized: false, isMaximized: false, zIndex: 11, width: 550, height: 450, x: 100, y: 50 },
     { id: 'about', title: 'About Ge-Linux', icon: <Info size={16} />, isOpen: false, isMinimized: false, isMaximized: false, zIndex: 10, width: 450, height: 500, x: 250, y: 100 },
     { id: 'taskmanager', title: 'Task Manager', icon: <Activity size={16} />, isOpen: false, isMinimized: false, isMaximized: false, zIndex: 10, width: 550, height: 450, x: 220, y: 120 },
+    { id: 'calculator', title: 'Calculator', icon: <Layout size={16} />, isOpen: false, isMinimized: false, isMaximized: false, zIndex: 10, width: 300, height: 450, x: 400, y: 100 },
+    { id: 'camera', title: 'Camera', icon: <Video size={16} />, isOpen: false, isMinimized: false, isMaximized: false, zIndex: 10, width: 640, height: 520, x: 150, y: 80 },
+    { id: 'paint', title: 'Ge-Paint', icon: <Palette size={16} />, isOpen: false, isMinimized: false, isMaximized: false, zIndex: 10, width: 800, height: 600, x: 100, y: 50 },
+    { id: 'messenger', title: 'Messenger', icon: <Globe size={16} />, isOpen: false, isMinimized: false, isMaximized: false, zIndex: 10, width: 350, height: 550, x: 800, y: 50 },
+    { id: 'stress', title: 'System Stress', icon: <Layers size={16} />, isOpen: false, isMinimized: false, isMaximized: false, zIndex: 10, width: 800, height: 600, x: 100, y: 50 },
+    { id: 'snake', title: 'Snake', icon: <Gamepad2 size={16} />, isOpen: false, isMinimized: false, isMaximized: false, zIndex: 10, width: 400, height: 450, x: 150, y: 50 },
+    { id: 'mines', title: 'Minesweeper', icon: <Gamepad2 size={16} />, isOpen: false, isMinimized: false, isMaximized: false, zIndex: 10, width: 350, height: 450, x: 200, y: 100 },
+    { id: 'invaders', title: 'Kernel Invaders', icon: <Shield size={16} />, isOpen: false, isMinimized: false, isMaximized: false, zIndex: 10, width: 600, height: 500, x: 250, y: 150 },
   ]);
   
   const [maxZIndex, setMaxZIndex] = useState(11);
@@ -324,17 +333,27 @@ export default function App() {
     setIsKernelPanic(true);
   };
   const toggleWindow = (id: string) => {
-    setWindows(prev => prev.map(w => {
-      if (w.id === id) {
-        const newZ = w.isOpen ? w.zIndex : maxZIndex + 1;
-        if (!w.isOpen) {
-          setMaxZIndex(newZ);
-          setFocusedWindowId(id);
-        }
-        return { ...w, isOpen: !w.isOpen, isMinimized: false, zIndex: newZ };
+    setWindows(prev => {
+      const win = prev.find(w => w.id === id);
+      if (!win) return prev;
+
+      if (win.isOpen && focusedWindowId === id && !win.isMinimized) {
+        // Already focused and open, so close it
+        return prev.map(w => w.id === id ? { ...w, isOpen: false } : w);
+      } else if (win.isOpen) {
+        // Open but not focused or minimized, bring to front
+        const newZ = maxZIndex + 1;
+        setMaxZIndex(newZ);
+        setFocusedWindowId(id);
+        return prev.map(w => w.id === id ? { ...w, zIndex: newZ, isMinimized: false } : w);
+      } else {
+        // Closed, so open and bring to front
+        const newZ = maxZIndex + 1;
+        setMaxZIndex(newZ);
+        setFocusedWindowId(id);
+        return prev.map(w => w.id === id ? { ...w, isOpen: true, zIndex: newZ, isMinimized: false } : w);
       }
-      return w;
-    }));
+    });
   };
 
   const focusWindow = (id: string) => {
@@ -579,7 +598,7 @@ export default function App() {
         }
         break;
       case 'neofetch':
-        textOutput = "OS: Ge-Linux v1.0.0\nKernel: 6.8.0-ge-linux\nShell: ge-sh 1.0";
+        textOutput = "OS: Ge-Linux v2.0.0 Beta\nKernel: 7.2.0-ge-linux-beta\nShell: ge-sh 2.0";
         response = {
           type: 'neofetch',
           content: (
@@ -591,10 +610,10 @@ export default function App() {
               <div className="flex flex-col gap-0.5">
                 <div className="text-accent font-bold">user@ge-linux</div>
                 <div className="h-px bg-accent/30 my-1" />
-                <div><span className="text-accent font-bold">OS:</span> Ge-Linux Beta v1.0.0</div>
-                <div><span className="text-accent font-bold">Kernel:</span> 6.8.0-ge-linux-beta</div>
+                <div><span className="text-accent font-bold">OS:</span> Ge-Linux v2.0.0 Beta</div>
+                <div><span className="text-accent font-bold">Kernel:</span> 7.2.0-ge-linux-beta</div>
                 <div><span className="text-accent font-bold">Uptime:</span> {Math.floor(performance.now() / 1000)}s</div>
-                <div><span className="text-accent font-bold">Shell:</span> ge-sh 1.0</div>
+                <div><span className="text-accent font-bold">Shell:</span> ge-sh 2.0</div>
                 <div className="flex gap-1 mt-1">
                   {[...Array(8)].map((_, i) => <div key={i} className="w-3 h-3" style={{ backgroundColor: ['#000', '#f00', '#0f0', '#ff0', '#00f', '#f0f', '#0ff', '#fff'][i] }} />)}
                 </div>
@@ -644,8 +663,39 @@ export default function App() {
         response = { type: 'text', content: textOutput };
         break;
       case 'uname':
-        textOutput = "Linux ge-linux 6.8.0-ge-linux-beta #1 SMP PREEMPT_DYNAMIC Mon Apr 21 2026 x86_64 GNU/Linux";
+        textOutput = "Linux ge-linux 7.2.0-ge-linux-beta #1 SMP PREEMPT_DYNAMIC Tue Apr 28 2026 x86_64 GNU/Linux";
         response = { type: 'text', content: textOutput };
+        break;
+      case 'sys-info':
+        response = {
+          type: 'text',
+          content: (
+            <div className="font-mono text-[10px] text-accent/80 mt-2 grid grid-cols-2 gap-2">
+              <div className="font-bold border-b border-accent/20 col-span-2 pb-1 mb-1">SYSTEM ARCHITECTURE FORENSICS</div>
+              <div>Processor:</div><div className="text-white">Ge-Quantum G3 @ 5.4 GHz</div>
+              <div>Memory:</div><div className="text-white">16GB ECC DDR6 (Virtual Swapped)</div>
+              <div>Graphics:</div><div className="text-white">Virtual-Geo V2 (Accelerated)</div>
+              <div>Storage:</div><div className="text-white">256GB NVMe-G (Thin Provisioned)</div>
+              <div>Network:</div><div className="text-white">10GbE Virtual Fiber</div>
+              <div>Kernel:</div><div className="text-white">LST 7.2.0-BETA_REL</div>
+            </div>
+          )
+        };
+        break;
+      case 'matrix':
+        response = {
+          type: 'text',
+          content: (
+            <div className="font-mono text-[10px] text-emerald-500 mt-2 animate-pulse">
+              {Array.from({ length: 10 }).map((_, i) => (
+                <div key={i} className="overflow-hidden whitespace-nowrap">
+                  {Array.from({ length: 40 }).map(() => String.fromCharCode(0x30A0 + Math.random() * 96)).join('')}
+                </div>
+              ))}
+              <div className="mt-2 text-white font-bold">[ SYSTEM BYPASS IN PROGRESS... ]</div>
+            </div>
+          )
+        };
         break;
       case 'top':
       case 'htop':
@@ -654,21 +704,21 @@ export default function App() {
         return;
       case 'dmesg':
         const dmesgLogs = [
-          '[    0.000000] initial-ramdisk: Ge-Linux Kernel 6.8.0-ge-linux-quantum initializing',
-          '[    0.000001] ACPI: Core revision 20240421',
-          '[    0.124512] Command line: BOOT_IMAGE=/boot/vmlinuz-6.8.0-beta root=UUID=ge-linux-root ro quiet splash',
-          '[    0.281241] Memory: 8192MB/8192MB available (14340K kernel code, 2314K rwdata, 4512K rodata, 2392K init, 1241K bss, 642MB reserved)',
-          '[    0.451241] CPU: Intel(R) Core(TM) i9-14900KS (Virtual-X86 Platform)',
-          '[    0.681241] smp: Bringing up secondary CPUs...',
+          '[    0.000000] initial-ramdisk: Ge-Linux Kernel 7.2.0-ge-linux-beta initializing',
+          '[    0.000001] ACPI: Core revision 20260428',
+          '[    0.124512] Command line: BOOT_IMAGE=/boot/vmlinuz-7.2.0-beta root=UUID=ge-linux-root ro quiet splash',
+          '[    0.281241] Memory: 16384MB/16384MB available (24340K kernel code, 3314K rwdata, 5512K rodata, 3392K init, 2241K bss, 1024MB reserved)',
+          '[    0.451241] CPU: Intel(R) Core(TM) i9-14900KS (Virtual-X86 Platform V2)',
+          '[    0.681241] smp: Bringing up 16 secondary CPUs...',
           '[    0.890124] PCI: Probing PCI hardware (bus 00 [io 0x0000-0xffff])',
-          '[    1.241251] NET: Registered protocol family 2 (IPv4) / Initializing TCP/IP stack',
-          '[    1.567124] rtc_cmos 00:01: current system clock synchronized to Stratum-1 server',
-          '[    2.124251] EXT4-fs (sda1): recovery complete, mount successful',
-          '[    3.890124] systemd[1]: systemd 255.4-1-ge-linux running in system mode',
-          '[    4.241124] Ge-Desktop Environment 1.0.0-beta-1 status: OK',
+          '[    1.241251] NET: Registered protocol family 2 (IPv4) / Initializing TCP/IP stack v2',
+          '[    1.567124] rtc_cmos 00:01: current system clock synchronized to Atomic Stratum-0',
+          '[    2.124251] EXT4-fs (sda1): recovery complete, mount successful (Journaled)',
+          '[    3.890124] systemd[1]: systemd 256.1-x-ge-linux running in system mode',
+          '[    4.241124] Ge-Desktop Environment 2.0.0-beta-1 status: VERIFIED',
           '[    5.567124] hid-generic: Registered human interface device (001:002)',
-          '[    6.124512] Audio/ALSA: Ge-Pulse sound architecture initialized',
-          '[    6.451241] Ge-Linux Beta Core (Build 20240421-1755) is ready'
+          '[    6.124512] Audio/ALSA: Ge-Pulse sound architecture v2.4 initialized',
+          '[    6.451241] Ge-Linux 2.0.0 Beta (Build 20260428-1711) is ready'
         ].join('\n');
         response = { type: 'text', content: <pre className="font-mono text-[10px] text-white/50 leading-relaxed">{dmesgLogs}</pre> };
         break;
@@ -951,7 +1001,7 @@ export default function App() {
               <div className="p-3 rounded-full bg-white/5 group-hover:bg-white/10 transition-colors">
                 <TerminalIcon size={20} />
               </div>
-              <span className="text-[10px] font-bold uppercase tracking-widest">TTY1</span>
+              <span className="text-[10px] font-bold uppercase tracking-widest">v2.0.0 Beta</span>
             </button>
           </div>
         </div>
@@ -967,9 +1017,9 @@ export default function App() {
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2 text-accent">
               <Monitor size={16} />
-              <span className="text-xs font-bold tracking-widest">GE-LINUX TTY1</span>
+              <span className="text-xs font-bold tracking-widest">GE-LINUX v2.0.0 BETA</span>
             </div>
-            <div className="leak-warning ml-4">INTERNAL PROTOTYPE - DO NOT LEAK</div>
+            <div className="system-tag ml-4">BETA 2.0.0-DEVELOPER</div>
           </div>
           <div className="flex items-center gap-2">
             <div className="w-2 h-2 rounded-full bg-accent/50" />
@@ -1018,7 +1068,7 @@ export default function App() {
           </div>
           <div className="flex flex-col items-center gap-2">
             <div className="text-xs font-bold tracking-[0.3em] text-white/40 uppercase">System Halted</div>
-            <div className="text-[10px] text-white/20 uppercase tracking-widest">Ge-Linux Kernel 6.8.0-ge-linux</div>
+            <div className="text-[10px] text-white/20 uppercase tracking-widest">Ge-Linux Kernel 7.2.0-ge-linux</div>
           </div>
           
           <motion.button
@@ -1213,6 +1263,14 @@ export default function App() {
         <DesktopIcon icon={<Clock size={32} />} label="Clock" onClick={() => toggleWindow('clock')} />
         <DesktopIcon icon={<Info size={32} />} label="Welcome" onClick={() => toggleWindow('welcome')} />
         <DesktopIcon icon={<Gamepad2 size={32} />} label="DOOM" onClick={() => toggleWindow('doom')} />
+        <DesktopIcon icon={<Layout size={32} />} label="Calc" onClick={() => toggleWindow('calculator')} />
+        <DesktopIcon icon={<Video size={32} />} label="Camera" onClick={() => toggleWindow('camera')} />
+        <DesktopIcon icon={<Palette size={32} />} label="Paint" onClick={() => toggleWindow('paint')} />
+        <DesktopIcon icon={<Globe size={32} />} label="Chat" onClick={() => toggleWindow('messenger')} />
+        <DesktopIcon icon={<Layers size={32} />} label="Stress" onClick={() => toggleWindow('stress')} />
+        <DesktopIcon icon={<Gamepad2 size={32} />} label="Snake" onClick={() => toggleWindow('snake')} />
+        <DesktopIcon icon={<Gamepad2 size={32} />} label="Mines" onClick={() => toggleWindow('mines')} />
+        <DesktopIcon icon={<Shield size={32} />} label="Invaders" onClick={() => toggleWindow('invaders')} />
         <DesktopIcon icon={<Settings size={32} />} label="Settings" onClick={() => toggleWindow('settings')} />
         <DesktopIcon icon={<Info size={32} />} label="About" onClick={() => toggleWindow('about')} />
       </div>
@@ -1311,6 +1369,14 @@ export default function App() {
                   onKernelPanic={triggerPanic}
                 />
               )}
+              {win.id === 'calculator' && <CalculatorApp />}
+              {win.id === 'paint' && <PaintApp />}
+              {win.id === 'camera' && <CameraApp />}
+              {win.id === 'messenger' && <MessengerApp />}
+              {win.id === 'stress' && <StressTestApp />}
+              {win.id === 'snake' && <SnakeGame />}
+              {win.id === 'mines' && <MinesweeperGame />}
+              {win.id === 'invaders' && <KernelInvadersGame />}
               {win.id === 'editor' && (
                 <div className="h-full flex flex-col bg-[#1e1e1e]">
                   <div className="h-8 bg-[#2d2d2d] border-b border-white/10 flex items-center justify-between px-3">
@@ -1512,7 +1578,7 @@ function Installer({ onComplete }: { onComplete: () => void }) {
         <div className="h-12 bg-white/5 border-b border-white/10 flex items-center px-6 justify-between">
           <div className="flex items-center gap-2">
             <Monitor size={18} className="text-accent" />
-            <span className="text-xs font-bold uppercase tracking-[0.2em] text-white/70">Ge-Linux Installer v1.0.0-beta</span>
+            <span className="text-xs font-bold uppercase tracking-[0.2em] text-white/70">Ge-Linux Installer v2.0.0-beta</span>
           </div>
           <div className="system-tag rounded-sm text-[8px] tracking-widest font-black">BETA BUILD</div>
         </div>
@@ -1627,7 +1693,7 @@ function Installer({ onComplete }: { onComplete: () => void }) {
 function SystemMonitorApp() {
   const [stats, setStats] = useState({
     cpu: 14,
-    ram: 1.2,
+    ram: 2.4,
     processes: 142,
     threads: 892,
     networkUp: 12,
@@ -1640,13 +1706,13 @@ function SystemMonitorApp() {
     const interval = setInterval(() => {
       setStats(prev => ({
         cpu: Math.max(5, Math.min(95, prev.cpu + (Math.random() * 10 - 5))),
-        ram: Math.max(0.8, Math.min(7.5, prev.ram + (Math.random() * 0.1 - 0.05))),
+        ram: Math.max(1.8, Math.min(14.5, prev.ram + (Math.random() * 0.1 - 0.05))),
         processes: Math.max(130, Math.min(160, prev.processes + (Math.random() > 0.8 ? (Math.random() > 0.5 ? 1 : -1) : 0))),
-        threads: Math.max(850, Math.min(950, prev.threads + (Math.random() > 0.7 ? Math.floor(Math.random() * 5 - 2) : 0))),
-        networkUp: Math.max(0, Math.min(100, prev.networkUp + (Math.random() * 20 - 10))),
-        networkDown: Math.max(0, Math.min(500, prev.networkDown + (Math.random() * 50 - 25))),
-        diskRead: Math.max(0, Math.min(50, prev.diskRead + (Math.random() * 5 - 2.5))),
-        diskWrite: Math.max(0, Math.min(50, prev.diskWrite + (Math.random() * 5 - 2.5)))
+        threads: Math.max(850, Math.min(1050, prev.threads + (Math.random() > 0.7 ? Math.floor(Math.random() * 5 - 2) : 0))),
+        networkUp: Math.max(0, Math.min(250, prev.networkUp + (Math.random() * 20 - 10))),
+        networkDown: Math.max(0, Math.min(1500, prev.networkDown + (Math.random() * 100 - 50))),
+        diskRead: Math.max(0, Math.min(150, prev.diskRead + (Math.random() * 10 - 5))),
+        diskWrite: Math.max(0, Math.min(150, prev.diskWrite + (Math.random() * 10 - 5)))
       }));
     }, 1000);
     return () => clearInterval(interval);
@@ -1656,7 +1722,7 @@ function SystemMonitorApp() {
     <div className="p-6 flex flex-col gap-6 overflow-y-auto h-full scrollbar-hide">
       <div className="flex flex-col gap-2">
         <div className="flex justify-between text-xs font-bold text-white/70 uppercase tracking-wider">
-          <span className="flex items-center gap-2"><Cpu size={14} className="text-accent" /> CPU Usage</span>
+          <span className="flex items-center gap-2"><Cpu size={14} className="text-accent" /> CPU Core Usage</span>
           <span>{stats.cpu.toFixed(1)}%</span>
         </div>
         <div className="h-2 bg-white/10 rounded-full overflow-hidden border border-white/5">
@@ -1670,13 +1736,13 @@ function SystemMonitorApp() {
 
       <div className="flex flex-col gap-2">
         <div className="flex justify-between text-xs font-bold text-white/70 uppercase tracking-wider">
-          <span className="flex items-center gap-2"><Activity size={14} className="text-accent" /> RAM Usage</span>
-          <span>{stats.ram.toFixed(2)}GB / 8GB</span>
+          <span className="flex items-center gap-2"><Activity size={14} className="text-accent" /> Memory Forensics</span>
+          <span>{stats.ram.toFixed(2)}GB / 16GB</span>
         </div>
         <div className="h-2 bg-white/10 rounded-full overflow-hidden border border-white/5">
           <motion.div 
             className="h-full bg-accent shadow-[0_0_10px_rgba(var(--accent-rgb),0.5)]" 
-            animate={{ width: `${(stats.ram / 8) * 100}%` }} 
+            animate={{ width: `${(stats.ram / 16) * 100}%` }} 
             transition={{ duration: 1 }}
           />
         </div>
@@ -1728,9 +1794,9 @@ function SystemMonitorApp() {
       </div>
 
       <div className="mt-2 p-3 bg-accent/5 border border-accent/20 rounded text-[8px] text-accent/70 font-mono leading-tight">
-        SYSTEM KERNEL: GE-LINUX 5.15.0-76-GENERIC<br/>
-        UPTIME: 12 DAYS, 4 HOURS, 15 MINUTES<br/>
-        LOAD AVERAGE: 0.45, 0.32, 0.28
+        SYSTEM KERNEL: GE-LINUX 7.2.0-BETA-RELEASE<br/>
+        UPTIME: 127 DAYS, 14 HOURS, 52 MINUTES<br/>
+        LOAD AVERAGE: 0.12, 0.08, 0.05
       </div>
     </div>
   );
@@ -1744,8 +1810,8 @@ function AboutApp() {
           <div className="w-24 h-24 bg-accent rounded-3xl flex items-center justify-center text-black shadow-[0_0_30px_rgba(63,185,80,0.3)] mb-4">
             <Monitor size={56} />
           </div>
-          <h1 className="text-4xl font-black tracking-tighter uppercase italic">Ge-Linux</h1>
-          <p className="text-accent font-bold text-sm tracking-widest uppercase opacity-80 mt-1">Version 1.0.0-beta</p>
+          <h1 className="text-4xl font-black tracking-tighter uppercase italic">Ge-Linux 2.0</h1>
+          <p className="text-accent font-bold text-sm tracking-widest uppercase opacity-80 mt-1">Version 2.0.0-beta</p>
         </div>
 
         <div className="space-y-6 text-left">
@@ -1759,7 +1825,7 @@ function AboutApp() {
               </div>
               <div>
                 <div className="font-bold text-lg">Richard Bakro</div>
-                <div className="text-xs text-white/40">Lead Architect & Visionary</div>
+                <div className="text-xs text-white/40">Lead Architect & Cloud Visionary</div>
               </div>
             </div>
           </div>
@@ -1785,11 +1851,11 @@ function AboutApp() {
               </div>
               <div>
                 <div className="text-white/30 uppercase mb-1">Kernel</div>
-                <div className="font-mono">GE-Core 6.8.0</div>
+                <div className="font-mono">GE-Core 7.2.0</div>
               </div>
               <div>
                 <div className="text-white/30 uppercase mb-1">Shell</div>
-                <div className="font-mono">ge-sh 1.0</div>
+                <div className="font-mono">ge-sh 2.0</div>
               </div>
               <div>
                 <div className="text-white/30 uppercase mb-1">UI Engine</div>
@@ -1808,96 +1874,103 @@ function AboutApp() {
 }
 
 function WelcomeApp({ onOpenAbout }: { onOpenAbout: () => void }) {
-  const [installing, setInstalling] = useState<string | null>(null);
-  const [installed, setInstalled] = useState<string[]>([]);
-
-  const software = [
-    { id: 'chrome', name: 'Google Chrome', icon: <Layout size={20} />, desc: 'Fast, secure browser.' },
-    { id: 'vscode', name: 'VS Code', icon: <Edit3 size={20} />, desc: 'Code editing. Redefined.' },
-    { id: 'spotify', name: 'Spotify', icon: <Play size={20} />, desc: 'Digital music service.' },
-  ];
-
-  const handleInstall = (id: string) => {
-    setInstalling(id);
-    setTimeout(() => {
-      setInstalling(null);
-      setInstalled(prev => [...prev, id]);
-    }, 2000);
-  };
+  const [bootLog, setBootLog] = useState<string[]>([]);
+  
+  useEffect(() => {
+    const logs = [
+      'Initialize Kernel v2.0.0-Beta...',
+      'Mapping virtual address space...',
+      'Loading Ge-Linux Environment...',
+      'Mounting /dev/root on /...',
+      'Starting System Services...',
+      'UI Compositor: ONLINE',
+      'Uplink Tunnel: ESTABLISHED',
+      'System Ready.'
+    ];
+    let i = 0;
+    const interval = setInterval(() => {
+      if (i < logs.length) {
+        setBootLog(prev => [...prev, logs[i]]);
+        i++;
+      } else {
+        clearInterval(interval);
+      }
+    }, 400);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
-    <div className="h-full bg-[#1a1a1a] text-white/90 p-8 overflow-y-auto font-sans">
-      <div className="max-w-2xl mx-auto">
+    <div className="h-full bg-[#111] overflow-y-auto custom-scrollbar flex flex-col font-mono">
+      <div className="p-8 text-white">
         <div className="flex items-center gap-4 mb-8">
-          <div className="w-16 h-16 bg-accent rounded-2xl flex items-center justify-center text-black shadow-[0_0_20px_rgba(63,185,80,0.4)]">
-            <Monitor size={40} />
+          <div className="w-12 h-12 bg-accent/20 rounded-2xl flex items-center justify-center text-accent shadow-lg shadow-accent/10 border border-accent/20">
+            <Cpu size={24} />
           </div>
           <div>
-            <h1 className="text-3xl font-black tracking-tighter uppercase italic">Welcome to Ge-Linux Beta</h1>
-            <p className="text-accent font-bold text-xs tracking-widest uppercase opacity-80">The Ultimate Web-Based Computing Platform</p>
+            <h1 className="text-3xl font-black italic tracking-tighter uppercase">Ge-Linux <span className="text-accent underline">v2.0</span></h1>
+            <p className="text-[10px] text-white/40 uppercase font-bold tracking-[0.3em]">Professional Web-Kernel Edition</p>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
-          <div className="bg-white/5 p-6 rounded-xl border border-white/10 hover:border-accent/30 transition-colors">
-            <h2 className="text-lg font-bold mb-3 flex items-center gap-2 text-accent">
-              <Info size={20} /> Overview
-            </h2>
-            <p className="text-sm text-white/60 leading-relaxed">
-              Ge-Linux Beta is a professional-grade, high-performance operating system simulation. 
-              It features technical-grade kernel diagnostics, advanced process forensics, and a robust terminal environment.
-            </p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+          <div className="bg-white/5 border border-white/10 rounded-2xl p-5 space-y-4">
+            <h2 className="text-xs font-black uppercase text-accent tracking-widest border-b border-white/5 pb-2">Hardware Spec</h2>
+            <div className="space-y-2">
+              <div className="flex justify-between text-[11px]">
+                <span className="text-white/40 font-bold uppercase">CPU</span>
+                <span className="text-white/80">Virtual 8-Core Cluster</span>
+              </div>
+              <div className="flex justify-between text-[11px]">
+                <span className="text-white/40 font-bold uppercase">MEM</span>
+                <span className="text-white/80">64.0 GiB (Simulation)</span>
+              </div>
+              <div className="flex justify-between text-[11px]">
+                <span className="text-white/40 font-bold uppercase">NET</span>
+                <span className="text-white/80 italic">Uplinked (HTTP/S)</span>
+              </div>
+            </div>
           </div>
-          <div className="bg-white/5 p-6 rounded-xl border border-white/10 hover:border-accent/30 transition-colors">
-            <h2 className="text-lg font-bold mb-3 flex items-center gap-2 text-accent">
-              <HelpCircle size={20} /> Resources
-            </h2>
-            <ul className="text-sm text-white/60 space-y-2">
-              <li><a href="#" className="hover:text-accent underline underline-offset-4 decoration-accent/30">Official Documentation</a></li>
-              <li><a href="#" className="hover:text-accent underline underline-offset-4 decoration-accent/30">Community Wiki</a></li>
-              <li><button onClick={onOpenAbout} className="hover:text-accent underline underline-offset-4 decoration-accent/30">About Ge-Linux</button></li>
+
+          <div className="bg-white/5 border border-white/10 rounded-2xl p-5">
+            <h2 className="text-xs font-black uppercase text-accent tracking-widest border-b border-white/5 pb-2 mb-4">Quick Start</h2>
+            <ul className="space-y-2 text-[10px] text-white/50 leading-relaxed uppercase font-bold">
+              <li className="flex gap-2"><span className="text-accent">»</span> Use Terminal for forensics</li>
+              <li className="flex gap-2"><span className="text-accent">»</span> Launch Snake for stress-test</li>
+              <li className="flex gap-2"><span className="text-accent">»</span> Deploy Browser for networking</li>
             </ul>
           </div>
         </div>
 
-        <div className="mb-8">
-          <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
-            <Package size={24} className="text-accent" /> Recommended Software
-          </h2>
-          <div className="space-y-4">
-            {software.map(app => (
-              <div key={app.id} className="flex items-center justify-between p-4 bg-white/5 rounded-xl border border-white/10">
-                <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center text-accent">
-                    {app.icon}
-                  </div>
-                  <div>
-                    <div className="font-bold">{app.name}</div>
-                    <div className="text-xs text-white/40">{app.desc}</div>
-                  </div>
-                </div>
-                <button 
-                  onClick={() => !installed.includes(app.id) && handleInstall(app.id)}
-                  disabled={installing === app.id || installed.includes(app.id)}
-                  className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all ${
-                    installed.includes(app.id) 
-                      ? 'bg-accent/20 text-accent cursor-default' 
-                      : installing === app.id
-                        ? 'bg-white/10 text-white/40 cursor-wait'
-                        : 'bg-accent text-black hover:scale-105 active:scale-95'
-                  }`}
-                >
-                  {installed.includes(app.id) ? 'Installed' : installing === app.id ? 'Installing...' : 'Install'}
-                </button>
+        <div className="bg-black border border-white/10 rounded-xl p-4 mb-8">
+          <div className="flex items-center gap-2 mb-2 text-white/30">
+            <TerminalIcon size={12} />
+            <span className="text-[9px] uppercase font-black tracking-widest">Boot Initialization Sequence</span>
+          </div>
+          <div className="space-y-1">
+            {bootLog.map((log, idx) => (
+              <div key={idx} className="text-[10px] flex gap-2">
+                <span className="text-accent font-bold opacity-50">[{new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}]</span>
+                <span className="text-white/80">{log}</span>
               </div>
             ))}
           </div>
         </div>
 
-        <div className="p-6 bg-accent/10 rounded-xl border border-accent/20 text-center">
-          <p className="text-sm font-bold text-accent mb-2 italic">"Ge-Linux: Where the web meets the terminal."</p>
-          <p className="text-[10px] text-white/40 uppercase tracking-widest">© 2026 GE-LINUX PROJECT. ALL RIGHTS RESERVED.</p>
+        <div className="flex flex-col sm:flex-row gap-4">
+          <button 
+            onClick={onOpenAbout}
+            className="flex-1 bg-accent text-black font-black uppercase text-xs tracking-widest py-3 rounded-full hover:scale-105 active:scale-95 transition-all shadow-lg shadow-accent/20"
+          >
+            System Manifesto
+          </button>
+          <button className="flex-1 bg-white/5 border border-white/10 text-white font-black uppercase text-xs tracking-widest py-3 rounded-full hover:bg-white/10 transition-all">
+            Update Kernel
+          </button>
         </div>
+      </div>
+      
+      <div className="mt-auto p-4 border-t border-white/5 text-center">
+        <p className="text-[8px] text-white/20 uppercase font-black tracking-[0.5em]">Licensed to Ge-Engine Forensics v2.0</p>
       </div>
     </div>
   );
@@ -2009,6 +2082,14 @@ function StartMenu({ onClose, onToggleWindow, onSetMode }: { onClose: () => void
     { id: 'system', title: 'System Monitor', icon: <Activity size={16} />, category: 'System' },
     { id: 'taskmanager', title: 'Task Manager', icon: <Activity size={16} />, category: 'System' },
     { id: 'settings', title: 'Settings', icon: <Settings size={16} />, category: 'System' },
+    { id: 'calculator', title: 'Calculator', icon: <Layout size={16} />, category: 'Accessories' },
+    { id: 'paint', title: 'Ge-Paint', icon: <Palette size={16} />, category: 'Accessories' },
+    { id: 'camera', title: 'Camera', icon: <Video size={16} />, category: 'Accessories' },
+    { id: 'messenger', title: 'Messenger', icon: <Globe size={16} />, category: 'Internet' },
+    { id: 'snake', title: 'Snake Game', icon: <Gamepad2 size={16} />, category: 'Games' },
+    { id: 'mines', title: 'Minesweeper', icon: <Gamepad2 size={16} />, category: 'Games' },
+    { id: 'invaders', title: 'Kernel Invaders', icon: <Shield size={16} />, category: 'Games' },
+    { id: 'stress', title: 'Stress Test', icon: <Layers size={16} />, category: 'System' },
     { id: 'welcome', title: 'Welcome', icon: <Info size={16} />, category: 'All' },
     { id: 'about', title: 'About', icon: <Info size={16} />, category: 'All' },
   ];
@@ -2102,7 +2183,7 @@ function StartMenu({ onClose, onToggleWindow, onSetMode }: { onClose: () => void
           <button 
             onClick={() => { onSetMode('terminal'); onClose(); }}
             className="p-2 hover:bg-white/10 rounded-lg text-white/40 hover:text-white transition-all"
-            title="Switch to TTY1"
+            title="Switch to Kernel Shell"
           >
             <TerminalIcon size={14} />
           </button>
@@ -2410,6 +2491,9 @@ function TaskManagerApp({ windows, closeWindow, onKernelPanic }: { windows: Wind
     { pid: 1024, name: 'network-mgr', cpu: 0.0, mem: 18.2, user: 'root', status: 'Running', critical: false, icon: <Network size={10} /> },
     { pid: 1088, name: 'pulseaudio', cpu: 0.5, mem: 34.1, user: 'user', status: 'Running', critical: false, icon: <Volume2 size={10} /> },
     { pid: 1120, name: 'ge-sh', cpu: 0.0, mem: 8.4, user: 'user', status: 'Running', critical: false, icon: <TerminalIcon size={10} /> },
+    { pid: 1245, name: 'kernel-forensics', cpu: 5.4, mem: 212.4, user: 'root', status: 'Running', critical: false, icon: <Shield size={10} /> },
+    { pid: 1301, name: 'cloud-sync', cpu: 0.2, mem: 45.1, user: 'user', status: 'Running', critical: false, icon: <Cloud size={10} /> },
+    { pid: 1400, name: 'telemetry-d', cpu: 0.1, mem: 8.2, user: 'root', status: 'Sleeping', critical: false, icon: <Activity size={10} /> },
   ]);
 
   // Map windows to "real" processes
@@ -2730,13 +2814,37 @@ function BrowserViewport({ url, tabId }: { url: string, tabId: string }) {
   const [renderMode, setRenderMode] = useState<'object' | 'iframe' | 'proxy' | 'reader'>('object');
   const [hasError, setHasError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
     setHasError(false);
     setIsLoading(true);
-    // Reset to object on new URL
-    setRenderMode('object');
+    setErrorMessage('');
+    // For 'about:blank' we don't render anything here
+    if (url === 'about:blank') {
+      setIsLoading(false);
+      return;
+    }
+    
+    // Auto-proxy heuristic
+    const problematicDomains = ['google.com', 'github.com', 'twitter.com', 'facebook.com', 'youtube.com', 'linkedin.com', 'reddit.com'];
+    const hostname = new URL(url).hostname;
+    if (problematicDomains.some(d => hostname.includes(d))) {
+      setRenderMode('proxy');
+    } else {
+      setRenderMode('object');
+    }
   }, [url, tabId]);
+
+  useEffect(() => {
+    const handleForceProxy = (e: any) => {
+      if (e.detail.tabId === tabId) {
+        setRenderMode(prev => prev === 'proxy' ? 'object' : 'proxy');
+      }
+    };
+    window.addEventListener('ge-browser-force-proxy', handleForceProxy);
+    return () => window.removeEventListener('ge-browser-force-proxy', handleForceProxy);
+  }, [tabId]);
 
   const handleObjectError = () => {
     console.warn("Object rendering failed, falling back to proxy");
@@ -2751,28 +2859,47 @@ function BrowserViewport({ url, tabId }: { url: string, tabId: string }) {
   const handleProxyError = () => {
     setHasError(true);
     setIsLoading(false);
+    setErrorMessage('The proxy engine was unable to tunnel into this node. This usually happens when the target server has extreme anti-scraping measures or is geographically restricted.');
   };
 
   const proxyUrl = `/api/proxy?url=${encodeURIComponent(url)}`;
 
-  // Simulated Reader Mode for specific sites
+  if (url === 'about:blank') return null;
+
+  // Simulated Reader Mode
   if (renderMode === 'reader') {
     return (
-      <div className="h-full bg-white p-12 overflow-y-auto font-serif text-gray-800">
+      <div className="h-full bg-[#fdfaf6] p-12 overflow-y-auto font-serif text-gray-900 selection:bg-accent/20">
         <div className="max-w-2xl mx-auto">
-          <h1 className="text-3xl font-bold mb-4">GE-Reader View</h1>
-          <p className="text-sm text-gray-500 mb-8 italic">Source: {url}</p>
-          <div className="space-y-4 leading-relaxed">
+          <div className="flex justify-between items-start mb-12">
+            <div>
+              <h1 className="text-4xl font-bold mb-2 tracking-tight">GE-Reader Protocol</h1>
+              <p className="text-sm text-gray-500 font-sans uppercase tracking-widest font-bold opacity-60">Node: {new URL(url).hostname}</p>
+            </div>
+            <button 
+              onClick={() => setRenderMode('proxy')}
+              className="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded text-[10px] font-bold uppercase transition-colors"
+            >
+              Exit Reader
+            </button>
+          </div>
+          <div className="space-y-6 leading-[1.8] text-lg">
             <div className="h-4 bg-gray-100 rounded w-full animate-pulse" />
-            <div className="h-4 bg-gray-100 rounded w-5/6 animate-pulse" />
+            <div className="h-4 bg-gray-100 rounded w-11/12 animate-pulse" />
             <div className="h-4 bg-gray-100 rounded w-full animate-pulse" />
-            <div className="h-4 bg-gray-100 rounded w-4/6 animate-pulse" />
+            <div className="h-4 bg-gray-100 rounded w-10/12 animate-pulse" />
+            <div className="h-8 bg-gray-50 rounded-lg w-full flex items-center justify-center text-xs font-bold text-gray-300 uppercase tracking-widest">Processing Node Blocks...</div>
             <div className="h-4 bg-gray-100 rounded w-full animate-pulse" />
             <div className="h-4 bg-gray-100 rounded w-3/4 animate-pulse" />
+            <div className="h-4 bg-gray-100 rounded w-full animate-pulse" />
           </div>
-          <div className="mt-12 p-6 bg-accent/5 border border-accent/20 rounded-lg text-center">
-            <p className="text-xs text-accent font-bold uppercase mb-2">Alpha Reader Engine</p>
-            <p className="text-[10px] text-gray-500">The page content is being processed by our neural parser. Some elements may be missing.</p>
+          
+          <div className="mt-16 p-8 border-2 border-dashed border-gray-200 rounded-3xl text-center">
+            <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4 text-gray-400">
+              <Shield size={24} />
+            </div>
+            <p className="text-[11px] text-gray-400 uppercase font-black tracking-widest mb-2">Technical Limitation</p>
+            <p className="text-sm text-gray-500">Real-time neural parsing of dynamic web fragments is currently in beta. Content will stream as it is indexed by our crawling nodes.</p>
           </div>
         </div>
       </div>
@@ -2781,43 +2908,66 @@ function BrowserViewport({ url, tabId }: { url: string, tabId: string }) {
 
   return (
     <div className="h-full w-full relative bg-white">
-      {isLoading && (
-        <div className="absolute inset-0 z-20 bg-white flex flex-col items-center justify-center gap-4">
-          <div className="w-8 h-8 border-2 border-accent border-t-transparent rounded-full animate-spin" />
-          <div className="text-[10px] font-bold text-accent uppercase tracking-widest animate-pulse">Initializing Core Engine...</div>
+      {isLoading && renderMode !== 'reader' && (
+        <div className="absolute inset-0 z-20 bg-white flex flex-col items-center justify-center gap-6">
+          <div className="relative">
+            <div className="w-16 h-16 border-4 border-accent/10 rounded-full" />
+            <div className="absolute inset-0 w-16 h-16 border-4 border-accent border-t-transparent rounded-full animate-spin" />
+            <div className="absolute inset-0 flex items-center justify-center">
+              <Globe size={24} className="text-accent animate-pulse" />
+            </div>
+          </div>
+          <div className="text-center">
+            <div className="text-[11px] font-black text-accent uppercase tracking-[0.3em] mb-1">Engaging Uplink</div>
+            <div className="text-[9px] text-gray-400 uppercase font-bold flex items-center gap-2 justify-center">
+              <span>{renderMode.toUpperCase()} MODE</span>
+              <span className="w-1 h-1 rounded-full bg-gray-300" />
+              <span>TLS HANDSHAKE</span>
+            </div>
+          </div>
         </div>
       )}
 
       {hasError ? (
-        <div className="h-full flex flex-col items-center justify-center p-8 text-center bg-gray-50">
-          <div className="w-16 h-16 bg-error/10 rounded-full flex items-center justify-center mb-6">
-            <ShieldAlert className="text-error" size={32} />
-          </div>
-          <h2 className="text-lg font-bold text-gray-900 mb-2 tracking-tight">Connection Refused</h2>
-          <p className="text-xs text-gray-500 max-w-xs mb-8 leading-relaxed">
-            The target website (<strong>{new URL(url).hostname}</strong>) has rejected all connection attempts via GE-Lunweb's internal engine and proxy.
+        <div className="h-full flex flex-col items-center justify-center p-12 text-center bg-[#f8f9fa] selection:bg-error/20">
+          <motion.div 
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            className="w-20 h-20 bg-error/5 rounded-3xl flex items-center justify-center mb-8 border border-error/10"
+          >
+            <ShieldAlert className="text-error" size={40} />
+          </motion.div>
+          <h2 className="text-2xl font-black text-gray-900 mb-3 tracking-tighter uppercase italic">Neutralization Protocol</h2>
+          <p className="text-sm text-gray-500 max-w-sm mb-10 leading-relaxed font-medium">
+            {errorMessage}
           </p>
-          <div className="flex flex-col gap-3 w-full max-w-[200px]">
+          
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full max-w-md">
             <button 
               onClick={() => window.open(url, '_blank')}
-              className="w-full py-2 bg-accent text-white text-[10px] font-bold uppercase tracking-widest rounded hover:bg-accent/90 transition-colors flex items-center justify-center gap-2"
+              className="px-6 py-4 bg-accent text-white text-xs font-black uppercase italic tracking-widest rounded-2xl hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-3 shadow-xl shadow-accent/20"
             >
-              <ExternalLink size={14} /> Launch External
+              <ExternalLink size={18} /> Launch Externally
             </button>
             <button 
               onClick={() => setRenderMode('reader')}
-              className="w-full py-2 bg-white border border-gray-200 text-gray-600 text-[10px] font-bold uppercase tracking-widest rounded hover:bg-gray-50 transition-colors"
+              className="px-6 py-4 bg-white border-2 border-gray-200 text-gray-600 text-xs font-black uppercase italic tracking-widest rounded-2xl hover:bg-gray-50 hover:border-gray-300 transition-all flex items-center justify-center gap-3"
             >
-              Try Reader Mode
+              <FileText size={18} /> Reader Mode
             </button>
           </div>
-          <div className="mt-12 text-[8px] text-gray-300 uppercase font-bold tracking-widest">Error Code: X-PROXY-REJECTED</div>
+          
+          <div className="mt-16 flex items-center gap-4 text-[9px] text-gray-300 uppercase font-black tracking-widest">
+            <span>Code: 0x884-FL</span>
+            <div className="w-1 h-1 rounded-full bg-gray-200" />
+            <span>Trace: Blocked by Node Operator</span>
+          </div>
         </div>
       ) : (
-        <>
+        <div className="w-full h-full bg-white flex flex-col">
           {renderMode === 'object' && (
             <object
-              key={`obj-${tabId}`}
+              key={`obj-${tabId}-${url}`}
               data={url}
               type="text/html"
               className="w-full h-full border-none"
@@ -2825,7 +2975,7 @@ function BrowserViewport({ url, tabId }: { url: string, tabId: string }) {
               onError={handleObjectError}
             >
               <iframe 
-                key={`if-fallback-${tabId}`}
+                key={`if-fallback-${tabId}-${url}`}
                 src={url} 
                 className="w-full h-full border-none"
                 onLoad={() => setIsLoading(false)}
@@ -2836,7 +2986,7 @@ function BrowserViewport({ url, tabId }: { url: string, tabId: string }) {
           
           {renderMode === 'iframe' && (
             <iframe 
-              key={`if-${tabId}`}
+              key={`if-${tabId}-${url}`}
               src={url} 
               className="w-full h-full border-none"
               onLoad={() => setIsLoading(false)}
@@ -2846,14 +2996,14 @@ function BrowserViewport({ url, tabId }: { url: string, tabId: string }) {
 
           {renderMode === 'proxy' && (
             <iframe 
-              key={`proxy-${tabId}`}
+              key={`proxy-${tabId}-${url}`}
               src={proxyUrl} 
               className="w-full h-full border-none"
               onLoad={() => setIsLoading(false)}
               onError={handleProxyError}
             />
           )}
-        </>
+        </div>
       )}
     </div>
   );
@@ -2872,7 +3022,26 @@ function BrowserApp({ onClose, onMinimize, onMaximize }: { onClose: () => void, 
   ]);
   const [activeTabId, setActiveTabId] = useState('1');
   const [showHistory, setShowHistory] = useState(false);
-  const [globalHistory, setGlobalHistory] = useState<string[]>(['https://www.google.com', 'https://youtube.com', 'https://github.com']);
+  const [globalHistory, setGlobalHistory] = useState<string[]>(() => {
+    const saved = localStorage.getItem('ge-browser-history');
+    return saved ? JSON.parse(saved) : ['https://www.google.com', 'https://youtube.com', 'https://github.com'];
+  });
+  const [bookmarks, setBookmarks] = useState<{name: string, url: string}[]>(() => {
+    const saved = localStorage.getItem('ge-browser-bookmarks');
+    return saved ? JSON.parse(saved) : [
+      { name: 'Google', url: 'https://www.google.com/search?igu=1' },
+      { name: 'YouTube', url: 'https://youtube.com' },
+      { name: 'Ge-Linux Wiki', url: 'https://github.com/richardbakro/ge-linux' }
+    ];
+  });
+
+  useEffect(() => {
+    localStorage.setItem('ge-browser-history', JSON.stringify(globalHistory));
+  }, [globalHistory]);
+
+  useEffect(() => {
+    localStorage.setItem('ge-browser-bookmarks', JSON.stringify(bookmarks));
+  }, [bookmarks]);
 
   const activeTab = tabs.find(t => t.id === activeTabId) || tabs[0];
 
@@ -2881,28 +3050,28 @@ function BrowserApp({ onClose, onMinimize, onMaximize }: { onClose: () => void, 
   };
 
   const navigate = (newUrl: string) => {
-    let finalUrl = newUrl;
+    let finalUrl = newUrl.trim();
     
-    // Handle YouTube
-    if (newUrl.includes('youtube.com/watch?v=')) {
-      const videoId = newUrl.split('v=')[1]?.split('&')[0];
-      if (videoId) {
-        finalUrl = `https://www.youtube.com/embed/${videoId}`;
+    if (finalUrl === '') return;
+
+    // Handle Search vs URL
+    if (!finalUrl.includes('.') || finalUrl.includes(' ')) {
+      finalUrl = `https://www.google.com/search?q=${encodeURIComponent(finalUrl)}&igu=1`;
+    } else {
+      if (!finalUrl.startsWith('http://') && !finalUrl.startsWith('https://')) {
+        finalUrl = 'https://' + finalUrl;
       }
-    } else if (newUrl.includes('youtu.be/')) {
-      const videoId = newUrl.split('youtu.be/')[1]?.split('?')[0];
-      if (videoId) {
-        finalUrl = `https://www.youtube.com/embed/${videoId}`;
-      }
-    } else if (newUrl.includes('youtube.com/shorts/')) {
-      const videoId = newUrl.split('shorts/')[1]?.split('?')[0];
-      if (videoId) {
-        finalUrl = `https://www.youtube.com/embed/${videoId}`;
-      }
-    } else if (!newUrl.startsWith('http')) {
-      finalUrl = `https://www.google.com/search?q=${encodeURIComponent(newUrl)}&igu=1`;
-    } else if (newUrl.includes('google.com') && !newUrl.includes('igu=1')) {
-      finalUrl = newUrl + (newUrl.includes('?') ? '&' : '?') + 'igu=1';
+    }
+    
+    // Engine specific fixes
+    if (finalUrl.includes('youtube.com/watch?v=')) {
+      const videoId = finalUrl.split('v=')[1]?.split('&')[0];
+      if (videoId) finalUrl = `https://www.youtube.com/embed/${videoId}`;
+    } else if (finalUrl.includes('youtu.be/')) {
+      const videoId = finalUrl.split('youtu.be/')[1]?.split('?')[0];
+      if (videoId) finalUrl = `https://www.youtube.com/embed/${videoId}`;
+    } else if (finalUrl.includes('google.com') && !finalUrl.includes('igu=1')) {
+      finalUrl = finalUrl + (finalUrl.includes('?') ? '&' : '?') + 'igu=1';
     }
     
     const newHistory = activeTab.history.slice(0, activeTab.historyIndex + 1);
@@ -2910,27 +3079,25 @@ function BrowserApp({ onClose, onMinimize, onMaximize }: { onClose: () => void, 
     
     updateActiveTab({
       url: finalUrl,
-      inputUrl: newUrl,
+      inputUrl: finalUrl,
       history: newHistory,
       historyIndex: newHistory.length - 1,
-      title: newUrl.replace('https://', '').replace('www.', '').split('/')[0] || 'New Tab'
+      title: finalUrl.replace('https://', '').replace('http://', '').replace('www.', '').split('/')[0] || 'Page'
     });
 
-    if (!globalHistory.includes(newUrl)) {
-      setGlobalHistory(prev => [newUrl, ...prev].slice(0, 10));
-    }
+    setGlobalHistory(prev => [finalUrl, ...prev.filter(h => h !== finalUrl)].slice(0, 20));
     setShowHistory(false);
   };
 
-  const addTab = () => {
+  const addTab = (url: string = 'https://www.google.com/search?igu=1') => {
     const newId = Math.random().toString(36).substr(2, 9);
     const newTab: BrowserTab = {
       id: newId,
-      url: 'https://www.google.com/search?igu=1',
-      inputUrl: 'https://www.google.com',
-      history: ['https://www.google.com/search?igu=1'],
+      url: url,
+      inputUrl: url === 'about:blank' ? '' : url,
+      history: [url],
       historyIndex: 0,
-      title: 'New Tab'
+      title: url === 'about:blank' ? 'New Tab' : 'Page'
     };
     setTabs([...tabs, newTab]);
     setActiveTabId(newId);
@@ -2938,7 +3105,10 @@ function BrowserApp({ onClose, onMinimize, onMaximize }: { onClose: () => void, 
 
   const closeTab = (e: React.MouseEvent, id: string) => {
     e.stopPropagation();
-    if (tabs.length === 1) return;
+    if (tabs.length === 1) {
+      updateActiveTab({ url: 'about:blank', inputUrl: '', history: ['about:blank'], historyIndex: 0, title: 'New Tab' });
+      return;
+    }
     const newTabs = tabs.filter(t => t.id !== id);
     setTabs(newTabs);
     if (activeTabId === id) {
@@ -2968,140 +3138,1218 @@ function BrowserApp({ onClose, onMinimize, onMaximize }: { onClose: () => void, 
     }
   };
 
+  const toggleBookmark = () => {
+    const existing = bookmarks.find(b => b.url === activeTab.url);
+    if (existing) {
+      setBookmarks(prev => prev.filter(b => b.url !== activeTab.url));
+    } else if (activeTab.url !== 'about:blank') {
+      setBookmarks(prev => [...prev, { name: activeTab.title, url: activeTab.url }]);
+    }
+  };
+
   const handleSumbit = (e: React.FormEvent) => {
     e.preventDefault();
     navigate(activeTab.inputUrl);
   };
 
+  const isBookmarked = bookmarks.some(b => b.url === activeTab.url);
+
   return (
-    <div className="h-full flex flex-col bg-[#1a1a1a]">
+    <div className="h-full flex flex-col bg-[#1a1a1a] select-text">
       {/* Tab Bar */}
-      <div className="h-9 bg-[#1e1e1e] flex items-center px-2 gap-1 overflow-x-auto scrollbar-hide border-b border-white/5">
-        {tabs.map(tab => (
-          <div 
-            key={tab.id}
-            onClick={() => setActiveTabId(tab.id)}
-            className={`group flex items-center gap-2 px-3 h-7 rounded-t-lg text-[10px] cursor-pointer transition-all min-w-[100px] max-w-[150px] ${
-              activeTabId === tab.id ? 'bg-[#2d2d2d] text-white' : 'text-white/40 hover:bg-white/5'
-            }`}
-          >
-            <Globe size={10} className={activeTabId === tab.id ? 'text-accent' : ''} />
-            <span className="flex-1 truncate">{tab.title}</span>
-            <button 
-              onClick={(e) => closeTab(e, tab.id)}
-              className="opacity-0 group-hover:opacity-100 p-0.5 hover:bg-white/10 rounded transition-opacity"
+      <div className="h-10 bg-[#1e1e1e] flex items-center px-2 gap-1 overflow-x-auto scrollbar-hide border-b border-white/5">
+        <div className="flex gap-1">
+          {tabs.map(tab => (
+            <div 
+              key={tab.id}
+              onClick={() => setActiveTabId(tab.id)}
+              className={`group flex items-center gap-2 px-3 h-8 mt-2 rounded-t-lg text-[10px] cursor-pointer transition-all min-w-[120px] max-w-[200px] border-x border-t ${
+                activeTabId === tab.id ? 'bg-[#2d2d2d] text-white border-white/10' : 'text-white/40 hover:bg-white/5 border-transparent'
+              }`}
             >
-              <X size={10} />
-            </button>
-          </div>
-        ))}
+              <Globe size={10} className={activeTabId === tab.id ? 'text-accent' : ''} />
+              <span className="flex-1 truncate font-medium">{tab.title}</span>
+              <button 
+                onClick={(e) => closeTab(e, tab.id)}
+                className="opacity-0 group-hover:opacity-100 p-0.5 hover:bg-white/10 rounded transition-opacity"
+              >
+                <X size={10} />
+              </button>
+            </div>
+          ))}
+        </div>
         <button 
-          onClick={addTab}
-          className="p-1.5 hover:bg-white/10 rounded text-white/40 hover:text-white transition-colors"
+          onClick={() => addTab('about:blank')}
+          className="p-1.5 hover:bg-white/10 rounded text-white/40 hover:text-white transition-colors ml-1"
         >
           <Plus size={14} />
         </button>
       </div>
 
       {/* Toolbar */}
-      <div className="h-10 bg-[#2d2d2d] border-b border-white/10 flex items-center gap-2 px-3">
+      <div className="h-12 bg-[#2d2d2d] border-b border-white/10 flex items-center gap-3 px-3 shadow-lg z-30">
         <div className="flex items-center gap-1">
-          <button onClick={goBack} disabled={activeTab.historyIndex === 0} className="p-1.5 hover:bg-white/10 rounded disabled:opacity-30 text-white/70">
-            <ArrowLeft size={14} />
+          <button onClick={goBack} disabled={activeTab.historyIndex === 0} className="p-2 hover:bg-white/10 rounded-full disabled:opacity-30 text-white/70 transition-colors">
+            <ArrowLeft size={16} />
           </button>
-          <button onClick={goForward} disabled={activeTab.historyIndex === activeTab.history.length - 1} className="p-1.5 hover:bg-white/10 rounded disabled:opacity-30 text-white/70">
-            <ArrowRight size={14} />
+          <button onClick={goForward} disabled={activeTab.historyIndex === activeTab.history.length - 1} className="p-2 hover:bg-white/10 rounded-full disabled:opacity-30 text-white/70 transition-colors">
+            <ArrowRight size={16} />
           </button>
-          <button onClick={() => updateActiveTab({ url: activeTab.url })} className="p-1.5 hover:bg-white/10 rounded text-white/70">
-            <RotateCw size={14} />
+          <button onClick={() => updateActiveTab({ url: activeTab.url })} className="p-2 hover:bg-white/10 rounded-full text-white/70 transition-colors" title="Reload Node">
+            <RotateCw size={16} />
           </button>
-          <button onClick={() => navigate('https://www.google.com/search?igu=1')} className="p-1.5 hover:bg-white/10 rounded text-white/70">
-            <Home size={14} />
+          <button onClick={() => setTabs(prev => prev.map(t => t.id === activeTabId ? {...t, url: 'https://www.google.com/search?igu=1', inputUrl: ''} : t))} className="p-2 hover:bg-white/10 rounded-full text-white/70 transition-colors" title="Terminal Core">
+            <Home size={16} />
+          </button>
+          <button 
+            onClick={() => {
+              // Force Proxy Mode for active tab troubleshooting
+              window.dispatchEvent(new CustomEvent('ge-browser-force-proxy', { detail: { tabId: activeTab.id } }));
+            }} 
+            className="p-2 hover:bg-white/10 rounded-full text-white/70 transition-colors" 
+            title="Toggle Tunneling"
+          >
+            <Shield size={16} />
           </button>
         </div>
-        <div className="flex-1 relative">
-          <form onSubmit={handleSumbit}>
+
+        <div className="flex-1 relative flex items-center">
+          <div className="absolute left-3 text-white/20 pointer-events-none">
+            {activeTab.url.startsWith('https') ? <Shield size={12} className="text-accent" /> : <Info size={12} />}
+          </div>
+          <form onSubmit={handleSumbit} className="w-full">
             <input 
               type="text" 
               value={activeTab.inputUrl}
               onChange={(e) => updateActiveTab({ inputUrl: e.target.value })}
               onFocus={() => setShowHistory(true)}
-              className="w-full bg-black/30 border border-white/10 rounded px-3 py-1 text-[10px] text-white/80 outline-none focus:border-accent/50 transition-colors"
-              placeholder="Search or enter address"
+              className="w-full bg-black/40 border border-white/10 rounded-full pl-10 pr-10 py-1.5 text-[11px] text-white/90 outline-none focus:border-accent/40 focus:bg-black/60 transition-all font-mono"
+              placeholder="Search Google or enter a technical address"
             />
           </form>
-          {showHistory && (
-            <div className="absolute top-full left-0 right-0 mt-1 bg-[#2d2d2d] border border-white/10 rounded shadow-xl z-50 overflow-hidden">
-              <div className="p-2 border-b border-white/5 text-[8px] text-white/30 uppercase font-bold">Recent History</div>
-              {globalHistory.map((h, i) => (
-                <div 
-                  key={i}
-                  onClick={() => navigate(h)}
-                  className="px-3 py-2 text-[10px] text-white/70 hover:bg-accent/20 hover:text-white cursor-pointer flex items-center gap-2"
-                >
-                  <History size={10} className="text-white/30" />
-                  <span className="truncate">{h}</span>
-                </div>
-              ))}
-              <div 
-                onClick={() => setShowHistory(false)}
-                className="p-2 text-center text-[8px] text-white/30 hover:text-white cursor-pointer bg-black/20"
+          <button 
+            onClick={toggleBookmark}
+            className={`absolute right-3 transition-colors ${isBookmarked ? 'text-accent' : 'text-white/20 hover:text-white/50'}`}
+          >
+            <Heart size={14} fill={isBookmarked ? 'currentColor' : 'none'} />
+          </button>
+
+          <AnimatePresence>
+            {showHistory && (
+              <motion.div 
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                className="absolute top-full left-0 right-0 mt-2 bg-[#252525] border border-white/10 rounded-xl shadow-2xl z-50 overflow-hidden backdrop-blur-xl"
               >
-                CLOSE
-              </div>
-            </div>
-          )}
+                <div className="p-3 border-b border-white/5 flex justify-between items-center">
+                  <span className="text-[9px] text-white/30 uppercase font-bold tracking-widest">Recent Node Points</span>
+                  <button onClick={() => setShowHistory(false)} className="text-[8px] text-white/30 hover:text-white">ESC</button>
+                </div>
+                <div className="max-h-[300px] overflow-y-auto custom-scrollbar">
+                  {globalHistory.length > 0 ? globalHistory.map((h, i) => (
+                    <div 
+                      key={i}
+                      onClick={() => navigate(h)}
+                      className="px-4 py-3 text-[10px] text-white/70 hover:bg-accent/10 border-l-2 border-transparent hover:border-accent cursor-pointer flex items-center gap-3 group transition-all"
+                    >
+                      <History size={12} className="text-white/20 group-hover:text-accent" />
+                      <span className="truncate flex-1 font-mono">{h}</span>
+                      <ExternalLink size={10} className="opacity-0 group-hover:opacity-30" />
+                    </div>
+                  )) : (
+                    <div className="p-8 text-center text-[10px] text-white/20 italic">No history nodes logged.</div>
+                  )}
+                </div>
+                <div 
+                  onClick={() => { setGlobalHistory([]); setShowHistory(false); }}
+                  className="p-3 text-center text-[8px] text-white/30 hover:text-error cursor-pointer bg-black/20 hover:bg-error/5 transition-colors font-bold uppercase tracking-widest"
+                >
+                  Clear Telemetry History
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
+
         <div className="flex items-center gap-2">
           <button 
-            onClick={() => window.open(activeTab.url, '_blank')}
-            className="p-1.5 hover:bg-white/10 rounded text-white/50 hover:text-white transition-colors"
-            title="Open in new tab"
+            onClick={() => window.open(activeTab.url === 'about:blank' ? 'https://google.com' : activeTab.url, '_blank')}
+            className="p-2 hover:bg-white/10 rounded-full text-white/50 hover:text-white transition-colors"
+            title="External Uplink"
           >
-            <Maximize2 size={14} />
+            <ExternalLink size={16} />
           </button>
-          <div className="w-px h-4 bg-white/10 mx-1" />
-          <div className="flex items-center gap-1">
-            <button onClick={onMinimize} className="p-1.5 hover:bg-white/10 rounded text-white/50"><Minimize2 size={12} /></button>
-            <button onClick={onMaximize} className="p-1.5 hover:bg-white/10 rounded text-white/50"><Maximize2 size={12} /></button>
-            <button onClick={onClose} className="p-1.5 hover:bg-error/20 rounded text-error/70"><X size={12} /></button>
-          </div>
-          <div className="w-2 h-2 rounded-full bg-accent animate-pulse ml-2" />
-          <div className="flex items-center gap-2 px-2 py-1 bg-black/20 rounded border border-white/5 group relative cursor-help">
-            <Shield size={10} className="text-accent" />
-            <span className="text-[7px] font-bold text-white/40 uppercase tracking-tighter">Core Engine v1.1-Beta</span>
-            <div className="absolute top-full right-0 mt-2 w-48 p-3 bg-[#2d2d2d] border border-white/10 rounded shadow-2xl opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-[60]">
-              <p className="text-[9px] font-bold text-accent mb-1 uppercase">Engine Diagnostics</p>
-              <p className="text-[8px] text-white/50 leading-tight">Using Object-HTML fallback engine to bypass standard iframe restrictions. If a site fails, use the Maximize icon to launch externally.</p>
+          
+          <div className="w-px h-6 bg-white/10 mx-1" />
+          
+          <div className="flex items-center gap-3 px-3 py-1.5 bg-black/30 rounded-full border border-white/5 group relative cursor-help">
+            <div className="flex flex-col items-end">
+              <span className="text-[7px] font-bold text-accent uppercase tracking-tighter leading-none">Status</span>
+              <span className="text-[8px] font-black text-white/70 uppercase leading-none">Encrypted</span>
+            </div>
+            <Shield size={12} className="text-accent animate-pulse" />
+            
+            <div className="absolute top-full right-0 mt-3 w-64 p-4 bg-[#1a1a1a] border border-white/10 rounded-xl shadow-2xl opacity-0 group-hover:opacity-100 pointer-events-none transition-all z-[60] scale-95 group-hover:scale-100">
+              <div className="flex items-center gap-2 mb-3">
+                <div className="p-2 bg-accent/20 rounded-lg">
+                  <Shield size={16} className="text-accent" />
+                </div>
+                <div>
+                  <p className="text-[10px] font-bold text-white uppercase tracking-wider">GE-Lunweb Engine v2.0</p>
+                  <p className="text-[8px] text-accent font-black">ACTIVE PROTECTION</p>
+                </div>
+              </div>
+              <p className="text-[9px] text-white/50 leading-relaxed mb-4">
+                Using Multi-Vector rendering (Object + IFrame + Proxy) to bypass modern web barriers. If a node fails to render, use <span className="text-white">External Uplink</span>.
+              </p>
+              <div className="grid grid-cols-2 gap-2">
+                <div className="p-2 bg-white/5 rounded border border-white/5">
+                  <p className="text-[7px] text-white/30 uppercase mb-1">Encapsulation</p>
+                  <p className="text-[10px] font-mono text-accent">L4 BOLT</p>
+                </div>
+                <div className="p-2 bg-white/5 rounded border border-white/5">
+                  <p className="text-[7px] text-white/30 uppercase mb-1">Proxy Tunnel</p>
+                  <p className="text-[10px] font-mono text-accent">V-AES-256</p>
+                </div>
+              </div>
             </div>
           </div>
-          <span className="text-[8px] font-bold text-accent uppercase tracking-widest">SECURE</span>
         </div>
       </div>
 
-      {/* Content */}
+      {/* Bookmarks Bar */}
+      <div className="h-8 bg-[#252525] border-b border-white/5 flex items-center px-4 gap-4 overflow-x-auto scrollbar-hide">
+        <label className="text-[8px] text-white/20 uppercase font-black tracking-widest shrink-0">Bookmarks:</label>
+        <div className="flex items-center gap-3">
+          {bookmarks.map((b, i) => (
+            <button 
+              key={i}
+              onClick={() => navigate(b.url)}
+              className="flex items-center gap-1.5 group shrink-0"
+            >
+              <Globe size={10} className="text-white/20 group-hover:text-accent transition-colors" />
+              <span className="text-[9px] text-white/50 group-hover:text-white transition-colors">{b.name}</span>
+            </button>
+          ))}
+          <button 
+            onClick={toggleBookmark}
+            className="p-1 text-white/10 hover:text-accent transition-colors"
+          >
+            <Plus size={10} />
+          </button>
+        </div>
+      </div>
+
+      {/* Content Area */}
       <div className="flex-1 bg-white relative overflow-hidden" onClick={() => setShowHistory(false)}>
-        <BrowserViewport url={activeTab.url} tabId={activeTab.id} />
-        
-        {/* Overlay for sites that block iframes */}
-        <div className="absolute top-2 right-2 flex flex-col items-end gap-2 pointer-events-none z-50">
-          <div className="p-2 bg-black/80 rounded text-[8px] text-white/50 backdrop-blur-md border border-white/5">
-            GE-Lunweb v1.1 | Core Engine
+        {activeTab.url === 'about:blank' ? (
+          <div className="h-full w-full bg-[#0c0c0c] flex flex-col items-center justify-center p-12 overflow-y-auto">
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="max-w-4xl w-full"
+            >
+              <div className="flex flex-col items-center mb-16">
+                <div className="w-20 h-20 bg-accent rounded-3xl flex items-center justify-center text-black shadow-[0_0_40px_rgba(63,185,80,0.2)] mb-6">
+                  <Globe size={48} />
+                </div>
+                <h1 className="text-3xl font-black italic uppercase tracking-tighter text-white">GE-Lunweb Explorer</h1>
+                <p className="text-accent font-bold text-[10px] tracking-[0.4em] uppercase mt-1">Terminal-Grade Navigation</p>
+              </div>
+
+              <div className="max-w-2xl mx-auto w-full mb-16">
+                <form onSubmit={handleSumbit} className="relative group">
+                  <input 
+                    type="text"
+                    value={activeTab.inputUrl}
+                    onChange={(e) => updateActiveTab({ inputUrl: e.target.value })}
+                    className="w-full bg-white/5 border border-white/10 rounded-2xl px-12 py-5 text-lg text-white outline-none focus:border-accent/40 focus:bg-white/10 transition-all font-sans"
+                    placeholder="Search the node web..."
+                    autoFocus
+                  />
+                  <Search size={24} className="absolute left-4 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-accent transition-colors" />
+                  <button className="absolute right-4 top-1/2 -translate-y-1/2 px-4 py-2 bg-accent text-black font-black uppercase text-xs rounded-xl shadow-lg">ENTER</button>
+                </form>
+              </div>
+
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                {[
+                  { name: 'Terminal', icon: <Terminal size={24} />, url: 'https://github.com/richardbakro/ge-linux', desc: 'Core Repository' },
+                  { name: 'Intelligence', icon: <Cpu size={24} />, url: 'https://ais-dev-wtwrxnuhrgs52exqksw5xq-582718103733.us-east1.run.app', desc: 'Ge-Cloud Lab' },
+                  { name: 'Forensics', icon: <Activity size={24} />, url: 'https://www.google.com/search?q=kernel+panic+help&igu=1', desc: 'System Rescue' },
+                  { name: 'Archive', icon: <Folder size={24} />, url: 'https://archive.org', desc: 'Digital Legacy' }
+                ].map((site, i) => (
+                  <motion.div 
+                    key={i}
+                    whileHover={{ scale: 1.05, backgroundColor: 'rgba(255,255,255,0.05)' }}
+                    onClick={() => navigate(site.url)}
+                    className="p-6 bg-white/5 border border-white/10 rounded-2xl cursor-pointer group transition-all"
+                  >
+                    <div className="text-accent mb-4 group-hover:scale-110 transition-transform">{site.icon}</div>
+                    <div className="font-bold text-sm text-white mb-1 uppercase tracking-wider">{site.name}</div>
+                    <div className="text-[10px] text-white/40 uppercase font-bold">{site.desc}</div>
+                  </motion.div>
+                ))}
+              </div>
+            </motion.div>
+          </div>
+        ) : (
+          <>
+            <BrowserViewport url={activeTab.url} tabId={activeTab.id} />
+            
+            <div className="absolute top-4 right-4 flex flex-col items-end gap-2 pointer-events-none z-50">
+              <div className="p-2 bg-black/80 rounded-lg text-[9px] text-white/50 backdrop-blur-md border border-white/10 font-mono shadow-2xl">
+                GE-OVR: {new URL(activeTab.url).hostname}<br/>
+                <span className="text-accent font-bold">STATUS: STREAMING</span>
+              </div>
+            </div>
+          </>
+        )}
+      </div>
+
+      {/* Footer Info */}
+      <div className="h-6 bg-[#1a1a1a] border-t border-white/5 flex items-center px-4 justify-between">
+        <div className="flex items-center gap-4">
+          <div className="flex items-center gap-1.5">
+            <div className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
+            <span className="text-[8px] text-accent font-bold uppercase tracking-widest">Protocol Secured</span>
+          </div>
+          <span className="text-[8px] text-white/20 uppercase font-bold tracking-widest">Latency: 12ms</span>
+        </div>
+        <div className="flex items-center gap-4">
+          <span className="text-[8px] text-white/20 font-mono uppercase">Nodes Active: {tabs.length}</span>
+          <span className="text-[8px] text-accent font-black uppercase tracking-widest bg-accent/10 px-2 py-0.5 rounded leading-none">
+            ENGINE: {activeTab.url === 'about:blank' ? 'NULL' : 'DYNAMIC'}
+          </span>
+          <span className="text-[8px] text-white/30 font-bold uppercase tracking-[0.2em] italic">GE-LUNWEB ENGINE 2.0</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+
+function StressTestApp() {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [particleCount, setParticleCount] = useState(5000);
+  const [fps, setFps] = useState(0);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    let animationFrameId: number;
+    let lastTime = performance.now();
+    let frames = 0;
+
+    const particles: { x: number, y: number, vx: number, vy: number, color: string }[] = [];
+
+    const initParticles = () => {
+      particles.length = 0;
+      for (let i = 0; i < particleCount; i++) {
+        particles.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          vx: (Math.random() - 0.5) * 5,
+          vy: (Math.random() - 0.5) * 5,
+          color: `hsl(${Math.random() * 360}, 100%, 50%)`
+        });
+      }
+    };
+
+    const resize = () => {
+      const container = canvas.parentElement;
+      if (container) {
+        canvas.width = container.clientWidth;
+        canvas.height = container.clientHeight;
+        initParticles();
+      }
+    };
+
+    resize();
+    window.addEventListener('resize', resize);
+
+    const render = (time: number) => {
+      frames++;
+      if (time - lastTime >= 1000) {
+        setFps(frames);
+        frames = 0;
+        lastTime = time;
+      }
+
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      for (const p of particles) {
+        p.x += p.vx;
+        p.y += p.vy;
+
+        if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+        if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+
+        ctx.fillStyle = p.color;
+        ctx.fillRect(p.x, p.y, 2, 2);
+      }
+
+      animationFrameId = requestAnimationFrame(render);
+    };
+
+    animationFrameId = requestAnimationFrame(render);
+
+    return () => {
+      cancelAnimationFrame(animationFrameId);
+      window.removeEventListener('resize', resize);
+    };
+  }, [particleCount]);
+
+  return (
+    <div className="h-full flex flex-col bg-black overflow-hidden relative">
+      <div className="absolute top-4 left-4 z-10 flex flex-col gap-2 pointer-events-none">
+        <div className="text-accent font-black italic text-4xl tracking-tighter drop-shadow-2xl">
+          GE-LINUX STRESS ENGINE
+        </div>
+        <div className="flex gap-4">
+          <div className="px-3 py-1 bg-black/50 border border-accent/30 rounded backdrop-blur">
+            <span className="text-[10px] text-accent/50 uppercase font-bold tracking-widest">Active Entities</span>
+            <div className="text-xl font-mono text-white">{particleCount.toLocaleString()}</div>
+          </div>
+          <div className="px-3 py-1 bg-black/50 border border-accent/30 rounded backdrop-blur">
+            <span className="text-[10px] text-accent/50 uppercase font-bold tracking-widest">Performance</span>
+            <div className="text-xl font-mono text-white">{fps} FPS</div>
           </div>
         </div>
       </div>
 
-      {/* Status Bar */}
-      <div className="h-6 bg-[#2d2d2d] border-t border-white/10 flex items-center px-3 justify-between">
-        <div className="flex items-center gap-3">
-          <span className="text-[8px] text-white/30 uppercase font-bold">Bookmarks:</span>
-          <button onClick={() => navigate('https://youtube.com')} className="text-[8px] text-red-500 hover:underline">YouTube</button>
-          <button onClick={() => navigate('https://github.com')} className="text-[8px] text-accent hover:underline">GitHub</button>
-          <button onClick={() => navigate('https://reddit.com')} className="text-[8px] text-accent hover:underline">Reddit</button>
-          <button onClick={() => navigate('https://news.ycombinator.com')} className="text-[8px] text-accent hover:underline">HackerNews</button>
+      <div className="absolute bottom-4 right-4 z-10 flex flex-col items-end gap-2">
+        <div className="text-[8px] text-white/20 uppercase font-black tracking-[0.5em] mb-2">Adjust Particle Density</div>
+        <div className="flex gap-1">
+          {[1000, 5000, 10000, 20000, 50000].map(n => (
+            <button 
+              key={n}
+              onClick={() => setParticleCount(n)}
+              className={`px-3 py-1 text-[10px] font-bold uppercase transition-all rounded ${particleCount === n ? 'bg-accent text-black scale-110 shadow-lg' : 'bg-white/5 text-white/40 hover:bg-white/10'}`}
+            >
+              {n / 1000}K
+            </button>
+          ))}
         </div>
-        <div className="text-[8px] text-white/30 font-mono">100% RENDERED</div>
       </div>
+
+      <canvas ref={canvasRef} className="flex-1 cursor-crosshair" />
+    </div>
+  );
+}
+
+function MessengerApp() {
+  const [messages, setMessages] = useState([
+    { id: 1, user: 'KernelBot', text: 'Welcome to GE-Messenger Protocol.', time: 'System', type: 'system' },
+    { id: 2, user: 'Bakro_X', text: 'Hey, have you tried the new stress test?', time: '14:20', type: 'received' },
+    { id: 3, user: 'Bakro_X', text: 'It pushes the limits of the web-based kernel.', time: '14:21', type: 'received' },
+  ]);
+  const [input, setInput] = useState('');
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    scrollRef.current?.scrollTo(0, scrollRef.current.scrollHeight);
+  }, [messages]);
+
+  const handleSend = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!input.trim()) return;
+
+    const newMsg = {
+      id: Date.now(),
+      user: 'You',
+      text: input,
+      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      type: 'sent'
+    };
+
+    setMessages([...messages, newMsg]);
+    setInput('');
+
+    // Simulated reply
+    setTimeout(() => {
+      setMessages(prev => [...prev, {
+        id: Date.now() + 1,
+        user: 'Bakro_X',
+        text: 'The distribution is holding firm. Ge-Linux v2.0 is solid.',
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        type: 'received'
+      }]);
+    }, 1500);
+  };
+
+  return (
+    <div className="h-full flex flex-col bg-[#111] overflow-hidden">
+      <div className="h-12 bg-white/5 border-b border-white/10 flex items-center px-4 gap-3">
+        <div className="w-8 h-8 rounded-full bg-accent/20 flex items-center justify-center text-accent">
+          <User size={16} />
+        </div>
+        <div>
+          <div className="text-[10px] font-bold text-white uppercase tracking-wider leading-none">Bakro_X</div>
+          <div className="text-[8px] text-accent uppercase font-black tracking-widest mt-1">Uplink Stable</div>
+        </div>
+      </div>
+
+      <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar">
+        {messages.map(m => (
+          <div key={m.id} className={`flex flex-col ${m.type === 'sent' ? 'items-end' : m.type === 'system' ? 'items-center' : 'items-start'}`}>
+            {m.type === 'system' ? (
+              <div className="px-3 py-1 bg-white/5 text-[8px] text-white/30 uppercase font-black tracking-[0.2em] rounded">
+                {m.text}
+              </div>
+            ) : (
+              <div className="max-w-[80%] space-y-1">
+                <div className={`p-3 rounded-2xl text-[11px] leading-relaxed ${m.type === 'sent' ? 'bg-accent text-black font-medium' : 'bg-white/5 text-white/80 border border-white/5'}`}>
+                  {m.text}
+                </div>
+                <div className="text-[8px] text-white/20 uppercase font-bold px-1">{m.time}</div>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+
+      <form onSubmit={handleSend} className="p-4 bg-black/40 border-t border-white/5 flex gap-2">
+        <input 
+          type="text" 
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          placeholder="Transmit signal..."
+          className="flex-1 bg-white/5 border border-white/10 rounded-full px-4 py-2 text-[10px] text-white outline-none focus:border-accent/40 transition-all"
+        />
+        <button className="w-10 h-10 rounded-full bg-accent flex items-center justify-center text-black hover:scale-105 active:scale-95 transition-transform shadow-lg shadow-accent/20">
+          <ChevronRight size={20} />
+        </button>
+      </form>
+    </div>
+  );
+}
+
+function CameraApp() {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const [stream, setStream] = useState<MediaStream | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [isRecording, setIsRecording] = useState(false);
+  const [capturedItems, setCapturedItems] = useState<{type: 'image' | 'video', url: string, name: string}[]>([]);
+
+  useEffect(() => {
+    async function startCamera() {
+      try {
+        const s = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+        setStream(s);
+        if (videoRef.current) videoRef.current.srcObject = s;
+      } catch (err) {
+        setError('Hardware access denied or camera not found.');
+      }
+    }
+
+    startCamera();
+    return () => {
+      stream?.getTracks().forEach(t => t.stop());
+    };
+  }, []);
+
+  const takePhoto = () => {
+    const video = videoRef.current;
+    if (!video) return;
+    const canvas = document.createElement('canvas');
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    ctx.scale(-1, 1);
+    ctx.drawImage(video, -canvas.width, 0, canvas.width, canvas.height);
+    const url = canvas.toDataURL('image/png');
+    setCapturedItems(prev => [{type: 'image', url, name: `IMG_${Date.now()}.png`}, ...prev]);
+  };
+
+  const toggleRecording = () => {
+    if (isRecording) {
+      mediaRecorderRef.current?.stop();
+      setIsRecording(false);
+    } else {
+      if (!stream) return;
+      const chunks: Blob[] = [];
+      const recorder = new MediaRecorder(stream);
+      recorder.ondataavailable = (e) => chunks.push(e.data);
+      recorder.onstop = () => {
+        const blob = new Blob(chunks, { type: 'video/webm' });
+        const url = URL.createObjectURL(blob);
+        setCapturedItems(prev => [{type: 'video', url, name: `VID_${Date.now()}.webm`}, ...prev]);
+      };
+      recorder.start();
+      mediaRecorderRef.current = recorder;
+      setIsRecording(true);
+    }
+  };
+
+  return (
+    <div className="h-full bg-black flex flex-col relative overflow-hidden group font-mono">
+      {error ? (
+        <div className="flex-1 flex flex-col items-center justify-center p-12 text-center">
+          <div className="w-16 h-16 bg-error/10 rounded-3xl flex items-center justify-center text-error mb-6 border border-error/20">
+            <ShieldAlert size={32} />
+          </div>
+          <h2 className="text-xl font-bold text-white mb-2 uppercase tracking-tight">Access Denied</h2>
+          <p className="text-xs text-white/40 max-w-xs">{error}</p>
+        </div>
+      ) : (
+        <div className="flex-1 flex flex-col relative">
+          <video ref={videoRef} autoPlay playsInline muted className="w-full h-full object-cover scale-x-[-1]" />
+          
+          {/* Viewfinder Overlays */}
+          <div className="absolute inset-0 pointer-events-none border-[30px] border-black/40">
+             <div className="absolute top-4 right-4 flex flex-col items-end gap-1">
+                <div className="flex items-center gap-2">
+                  <div className={`w-2 h-2 rounded-full ${isRecording ? 'bg-error animate-pulse' : 'bg-white/20'}`} />
+                  <span className="text-[8px] font-black text-white/50 uppercase tracking-[0.2em]">{isRecording ? 'Recording' : 'Standby'}</span>
+                </div>
+             </div>
+          </div>
+
+          {/* Gallery Sidebar */}
+          <div className="absolute left-4 top-1/2 -translate-y-1/2 flex flex-col gap-2 max-h-[60%] overflow-y-auto no-scrollbar py-2">
+            {capturedItems.map((item, idx) => (
+              <a 
+                key={idx} 
+                href={item.url} 
+                download={item.name}
+                className="w-10 h-10 rounded border border-white/20 overflow-hidden bg-black/50 hover:scale-110 transition-transform flex items-center justify-center"
+              >
+                {item.type === 'image' ? (
+                   <img src={item.url} alt="" className="w-full h-full object-cover" />
+                ) : (
+                   <Download size={14} className="text-white/40" />
+                )}
+              </a>
+            ))}
+          </div>
+
+          {/* Controls */}
+          <div className="absolute bottom-8 left-0 right-0 flex items-center justify-center gap-8">
+            <button 
+              onClick={toggleRecording}
+              className={`w-12 h-12 rounded-full border-2 border-white/20 flex items-center justify-center transition-all ${isRecording ? 'bg-error/20 border-error scale-110' : 'bg-white/5 hover:bg-white/10'}`}
+            >
+              <div className={`transition-all ${isRecording ? 'w-4 h-4 rounded-sm bg-error' : 'w-4 h-4 rounded-full bg-white/40'}`} />
+            </button>
+
+            <button 
+              onClick={takePhoto}
+              className="w-16 h-16 rounded-full border-4 border-white flex items-center justify-center group-hover:scale-110 transition-transform active:scale-95 bg-white/20 relative"
+            >
+              <div className="w-12 h-12 rounded-full bg-white shadow-xl flex items-center justify-center">
+                <Camera size={20} className="text-black" />
+              </div>
+            </button>
+
+            <div className="w-12 h-12 flex items-center justify-center">
+              <Download size={20} className="text-white/20" />
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function PaintApp() {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [isDrawing, setIsDrawing] = useState(false);
+  const [color, setColor] = useState('#000000');
+  const [brushSize, setBrushSize] = useState(5);
+  const [tool, setTool] = useState<'pencil' | 'eraser' | 'rect' | 'circle'>('pencil');
+  const [startX, setStartX] = useState(0);
+  const [startY, setStartY] = useState(0);
+  const [snapshot, setSnapshot] = useState<ImageData | null>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    
+    // Initial white background
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+  }, []);
+
+  const startDrawing = (e: React.MouseEvent | React.TouchEvent) => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const rect = canvas.getBoundingClientRect();
+    const x = ('touches' in e) ? e.touches[0].clientX - rect.left : (e as React.MouseEvent).clientX - rect.left;
+    const y = ('touches' in e) ? e.touches[0].clientY - rect.top : (e as React.MouseEvent).clientY - rect.top;
+
+    setIsDrawing(true);
+    setStartX(x);
+    setStartY(y);
+    setSnapshot(ctx.getImageData(0, 0, canvas.width, canvas.height));
+
+    ctx.beginPath();
+    ctx.lineWidth = brushSize;
+    ctx.lineCap = 'round';
+    ctx.strokeStyle = tool === 'eraser' ? '#ffffff' : color;
+    ctx.moveTo(x, y);
+  };
+
+  const draw = (e: React.MouseEvent | React.TouchEvent) => {
+    if (!isDrawing) return;
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const rect = canvas.getBoundingClientRect();
+    const x = ('touches' in e) ? e.touches[0].clientX - rect.left : (e as React.MouseEvent).clientX - rect.left;
+    const y = ('touches' in e) ? e.touches[0].clientY - rect.top : (e as React.MouseEvent).clientY - rect.top;
+
+    if (tool === 'pencil' || tool === 'eraser') {
+      ctx.lineTo(x, y);
+      ctx.stroke();
+    } else if (snapshot) {
+      ctx.putImageData(snapshot, 0, 0);
+      ctx.strokeStyle = color;
+      if (tool === 'rect') {
+        ctx.strokeRect(startX, startY, x - startX, y - startY);
+      } else if (tool === 'circle') {
+        const radius = Math.sqrt(Math.pow(x - startX, 2) + Math.pow(y - startY, 2));
+        ctx.beginPath();
+        ctx.arc(startX, startY, radius, 0, 2 * Math.PI);
+        ctx.stroke();
+      }
+    }
+  };
+
+  const stopDrawing = () => {
+    setIsDrawing(false);
+  };
+
+  const clearCanvas = () => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    if (confirm('Clear the canvas? Current progress will be lost.')) {
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+    }
+  };
+
+  const downloadImage = () => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const link = document.createElement('a');
+    link.download = `GE_PAINT_${Date.now()}.png`;
+    link.href = canvas.toDataURL();
+    link.click();
+  };
+
+  const colors = [
+    '#000000', '#7f7f7f', '#880015', '#ed1c24', '#ff7f27', '#fff200', 
+    '#22b14c', '#00a2e8', '#3f48cc', '#a349a4', '#ffffff', '#c3c3c3',
+    '#b97a57', '#ffaec9', '#ffc90e', '#efe4b0', '#b5e61d', '#99d9ea', '#7092be', '#c8bfe7'
+  ];
+
+  return (
+    <div className="h-full bg-[#2a2a2a] flex flex-col font-mono text-white select-none">
+      <div className="bg-[#1e1e1e] border-b border-white/10 p-2 flex items-center justify-between">
+        <div className="flex items-center gap-4">
+          <div className="flex bg-black/40 rounded-lg p-1 gap-1">
+            <button onClick={() => setTool('pencil')} className={`p-2 rounded ${tool === 'pencil' ? 'bg-accent text-black' : 'hover:bg-white/5 text-white/40'}`} title="Pencil"><Pencil size={14} /></button>
+            <button onClick={() => setTool('eraser')} className={`p-2 rounded ${tool === 'eraser' ? 'bg-accent text-black' : 'hover:bg-white/5 text-white/40'}`} title="Eraser"><Eraser size={14} /></button>
+            <button onClick={() => setTool('rect')} className={`p-2 rounded ${tool === 'rect' ? 'bg-accent text-black' : 'hover:bg-white/5 text-white/40'}`} title="Rectangle"><Square size={14} /></button>
+            <button onClick={() => setTool('circle')} className={`p-2 rounded ${tool === 'circle' ? 'bg-accent text-black' : 'hover:bg-white/5 text-white/40'}`} title="Circle"><Circle size={14} /></button>
+          </div>
+          <div className="h-6 w-px bg-white/10" />
+          <div className="flex items-center gap-3">
+            <input 
+              type="range" min="1" max="50" value={brushSize} 
+              onChange={(e) => setBrushSize(Number(e.target.value))} 
+              className="w-24 accent-accent"
+            />
+            <span className="text-[10px] w-6 opacity-50">{brushSize}px</span>
+          </div>
+        </div>
+        <div className="flex items-center gap-2">
+          <button onClick={clearCanvas} className="p-2 hover:bg-error/20 text-error rounded transition-colors" title="Clear Canvas"><Trash2 size={16} /></button>
+          <button onClick={downloadImage} className="p-2 hover:bg-accent/20 text-accent rounded transition-colors" title="Save Image"><Download size={16} /></button>
+        </div>
+      </div>
+
+      <div className="flex-1 flex overflow-hidden">
+        <div className="w-12 bg-[#1e1e1e] border-r border-white/10 p-2 flex flex-col gap-2 overflow-y-auto no-scrollbar">
+          {colors.map(c => (
+            <button 
+              key={c} onClick={() => setColor(c)}
+              className={`w-8 h-8 rounded-sm border-2 ${color === c ? 'border-accent scale-110 shadow-lg shadow-accent/20' : 'border-black/20 hover:scale-105'}`}
+              style={{ backgroundColor: c }}
+            />
+          ))}
+          <input 
+            type="color" value={color} 
+            onChange={(e) => setColor(e.target.value)} 
+            className="w-8 h-8 rounded-sm bg-transparent border-2 border-white/10 p-0 cursor-pointer" 
+          />
+        </div>
+        <div className="flex-1 bg-[#333] p-4 flex items-center justify-center overflow-auto custom-scrollbar">
+          <canvas 
+            ref={canvasRef} 
+            width={1000} height={700} 
+            onMouseDown={startDrawing}
+            onMouseMove={draw}
+            onMouseUp={stopDrawing}
+            onMouseLeave={stopDrawing}
+            onTouchStart={startDrawing}
+            onTouchMove={draw}
+            onTouchEnd={stopDrawing}
+            className="bg-white shadow-2xl cursor-crosshair"
+          />
+        </div>
+      </div>
+
+      <div className="bg-[#1e1e1e] border-t border-white/10 px-4 py-1 flex justify-between">
+         <div className="text-[8px] text-white/20 uppercase font-black tracking-widest leading-loose">Ge-Engine Canvas Controller v1.0</div>
+         <div className="text-[8px] text-white/40 uppercase font-black">1000 x 700 PX</div>
+      </div>
+    </div>
+  );
+}
+
+function CalculatorApp() {
+  const [display, setDisplay] = useState('0');
+  const [expression, setExpression] = useState('');
+
+  const handleInput = (val: string) => {
+    if (display === '0' && val !== '.') setDisplay(val);
+    else setDisplay(prev => prev + val);
+  };
+
+  const calculate = () => {
+    try {
+      // Basic safety check for eval
+      const result = eval(display.replace(/[^0-9+\-*/.]/g, ''));
+      setExpression(display + ' =');
+      setDisplay(String(result));
+    } catch {
+      setDisplay('Error');
+    }
+  };
+
+  const clear = () => {
+    setDisplay('0');
+    setExpression('');
+  };
+
+  return (
+    <div className="h-full flex flex-col bg-[#1a1a1a] p-4 gap-4">
+      <div className="flex-1 flex flex-col justify-end p-4 bg-black/40 rounded-xl border border-white/5 text-right font-mono">
+        <div className="text-[10px] text-white/20 uppercase font-black h-4">{expression}</div>
+        <div className="text-4xl font-bold text-white truncate drop-shadow-glow">{display}</div>
+      </div>
+
+      <div className="grid grid-cols-4 gap-2">
+        <button onClick={clear} className="col-span-2 p-4 bg-white/5 hover:bg-white/10 text-accent font-black text-xs rounded-xl uppercase tracking-widest transition-all">Clear</button>
+        <button onClick={() => handleInput('/')} className="p-4 bg-white/5 hover:bg-accent/20 text-accent rounded-xl text-lg transition-all">/</button>
+        <button onClick={() => handleInput('*')} className="p-4 bg-white/5 hover:bg-accent/20 text-accent rounded-xl text-lg transition-all">*</button>
+        
+        {[7, 8, 9, 4, 5, 6, 1, 2, 3].map(n => (
+          <button key={n} onClick={() => handleInput(String(n))} className="p-4 bg-white/10 hover:bg-white/20 text-white rounded-xl text-lg font-bold transition-all">{n}</button>
+        ))}
+        
+        <button onClick={() => handleInput('-')} className="p-4 bg-white/5 hover:bg-accent/20 text-accent rounded-xl text-lg transition-all">-</button>
+        <button onClick={() => handleInput('0')} className="col-span-2 p-4 bg-white/10 hover:bg-white/20 text-white rounded-xl text-lg font-bold transition-all">0</button>
+        <button onClick={() => handleInput('.')} className="p-4 bg-white/10 hover:bg-white/20 text-white rounded-xl text-lg font-bold transition-all">.</button>
+        <button onClick={() => handleInput('+')} className="p-4 bg-white/5 hover:bg-accent/20 text-accent rounded-xl text-lg transition-all">+</button>
+        
+        <button onClick={calculate} className="col-span-4 p-4 bg-accent text-black font-black text-xs rounded-xl uppercase tracking-[0.3em] shadow-lg shadow-accent/20 hover:scale-[1.02] active:scale-95 transition-all">Execute Calculation</button>
+      </div>
+    </div>
+  );
+}
+
+function KernelInvadersGame() {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [gameState, setGameState] = useState<'start' | 'playing' | 'gameover'>('start');
+  const [score, setScore] = useState(0);
+
+  useEffect(() => {
+    if (gameState !== 'playing') return;
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    let shipX = canvas.width / 2;
+    const bullets: { x: number, y: number }[] = [];
+    const bugs: { x: number, y: number, type: string }[] = [];
+    let frame = 0;
+    let animationId: number;
+
+    const keys: Record<string, boolean> = {};
+    (window as any)._invaderKeys = keys;
+    const handleKeyDown = (e: KeyboardEvent) => keys[e.key] = true;
+    const handleKeyUp = (e: KeyboardEvent) => keys[e.key] = false;
+    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('keyup', handleKeyUp);
+
+    const update = () => {
+      if (keys['ArrowLeft']) shipX -= 5;
+      if (keys['ArrowRight']) shipX += 5;
+      shipX = Math.max(20, Math.min(canvas.width - 20, shipX));
+
+      if (frame % 10 === 0 && keys[' ']) bullets.push({ x: shipX, y: canvas.height - 40 });
+      if (frame % 40 === 0) bugs.push({ x: Math.random() * (canvas.width - 40) + 20, y: -20, type: ['NullPointer', 'SegFault', 'Leak'][Math.floor(Math.random() * 3)] });
+
+      bullets.forEach((b, i) => {
+        b.y -= 7;
+        if (b.y < 0) bullets.splice(i, 1);
+      });
+
+      bugs.forEach((b, i) => {
+        b.y += 2 + (score / 1000);
+        if (b.y > canvas.height) setGameState('gameover');
+        
+        bullets.forEach((bullet, bi) => {
+          if (Math.abs(bullet.x - b.x) < 20 && Math.abs(bullet.y - b.y) < 20) {
+            bugs.splice(i, 1);
+            bullets.splice(bi, 1);
+            setScore(s => s + 100);
+          }
+        });
+      });
+
+      frame++;
+    };
+
+    const draw = () => {
+      ctx.fillStyle = '#000';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Ship
+      ctx.fillStyle = '#3fb950';
+      ctx.beginPath();
+      ctx.moveTo(shipX, canvas.height - 40);
+      ctx.lineTo(shipX - 15, canvas.height - 10);
+      ctx.lineTo(shipX + 15, canvas.height - 10);
+      ctx.fill();
+
+      // Bullets
+      ctx.fillStyle = '#fff';
+      bullets.forEach(b => ctx.fillRect(b.x - 1, b.y, 2, 10));
+
+      // Bugs
+      bugs.forEach(b => {
+        ctx.fillStyle = '#f85149';
+        ctx.font = '10px monospace';
+        ctx.fillText(b.type, b.x - 20, b.y);
+        ctx.fillRect(b.x - 10, b.y + 5, 20, 10);
+      });
+    };
+
+    const loop = () => {
+      update();
+      draw();
+      animationId = requestAnimationFrame(loop);
+    };
+    loop();
+
+    return () => {
+      cancelAnimationFrame(animationId);
+      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('keyup', handleKeyUp);
+    };
+  }, [gameState, score]);
+
+  return (
+    <div className="h-full bg-black flex flex-col font-mono text-accent p-4">
+      <div className="flex justify-between items-center mb-2 border-b border-white/10 pb-2">
+        <div className="text-[10px] font-bold uppercase tracking-widest">Score: {score}</div>
+        <div className="text-[10px] font-bold uppercase tracking-widest">Kernel Shield: Active</div>
+      </div>
+      <div className="flex-1 relative border border-white/5 bg-black">
+        {gameState === 'start' && (
+          <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/80 z-10 text-center p-8">
+            <h2 className="text-2xl font-black italic mb-4 uppercase tracking-tighter">Kernel Invaders</h2>
+            <p className="text-[10px] text-white/50 mb-8 uppercase leading-relaxed max-w-xs">Defend the Ge-Linux kernel from incoming logic bugs. Use arrows to move and space to patch.</p>
+            <button onClick={() => setGameState('playing')} className="px-6 py-2 bg-accent text-black font-black uppercase text-xs tracking-widest rounded-full shadow-lg shadow-accent/20">Init Service</button>
+          </div>
+        )}
+        {gameState === 'gameover' && (
+          <div className="absolute inset-0 flex flex-col items-center justify-center bg-error/20 backdrop-blur-sm z-10 text-center p-8">
+            <h2 className="text-4xl font-black italic mb-2 uppercase text-error tracking-tighter">System Panic</h2>
+            <p className="text-sm text-white/70 mb-8 font-bold uppercase tracking-widest">Final Score: {score}</p>
+            <button onClick={() => { setGameState('playing'); setScore(0); }} className="px-6 py-2 bg-white text-black font-black uppercase text-xs tracking-widest rounded-full shadow-xl">Reboot Engine</button>
+          </div>
+        )}
+        <canvas ref={canvasRef} width={560} height={400} className="w-full h-full" />
+      </div>
+
+      {/* Mobile Controls */}
+      {gameState === 'playing' && (
+        <div className="mt-4 flex justify-between items-center px-4 mb-2">
+          <div className="flex gap-2">
+            <button 
+              onMouseDown={() => { if((window as any)._invaderKeys) (window as any)._invaderKeys['ArrowLeft'] = true; }}
+              onMouseUp={() => { if((window as any)._invaderKeys) (window as any)._invaderKeys['ArrowLeft'] = false; }}
+              onTouchStart={(e) => { e.preventDefault(); if((window as any)._invaderKeys) (window as any)._invaderKeys['ArrowLeft'] = true; }}
+              onTouchEnd={(e) => { e.preventDefault(); if((window as any)._invaderKeys) (window as any)._invaderKeys['ArrowLeft'] = false; }}
+              className="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center text-white active:bg-accent active:text-black transition-all"
+            >
+              <ChevronLeft size={24} />
+            </button>
+            <button 
+              onMouseDown={() => { if((window as any)._invaderKeys) (window as any)._invaderKeys['ArrowRight'] = true; }}
+              onMouseUp={() => { if((window as any)._invaderKeys) (window as any)._invaderKeys['ArrowRight'] = false; }}
+              onTouchStart={(e) => { e.preventDefault(); if((window as any)._invaderKeys) (window as any)._invaderKeys['ArrowRight'] = true; }}
+              onTouchEnd={(e) => { e.preventDefault(); if((window as any)._invaderKeys) (window as any)._invaderKeys['ArrowRight'] = false; }}
+              className="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center text-white active:bg-accent active:text-black transition-all"
+            >
+              <ChevronRight size={24} />
+            </button>
+          </div>
+          <button 
+            onMouseDown={() => { if((window as any)._invaderKeys) (window as any)._invaderKeys[' '] = true; }}
+            onMouseUp={() => { if((window as any)._invaderKeys) (window as any)._invaderKeys[' '] = false; }}
+            onTouchStart={(e) => { e.preventDefault(); if((window as any)._invaderKeys) (window as any)._invaderKeys[' '] = true; }}
+            onTouchEnd={(e) => { e.preventDefault(); if((window as any)._invaderKeys) (window as any)._invaderKeys[' '] = false; }}
+            className="px-8 h-12 bg-accent/20 border border-accent/40 rounded-xl flex items-center justify-center text-accent font-black uppercase text-xs tracking-widest active:bg-accent active:text-black transition-all"
+          >
+            FIRE
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function MinesweeperGame() {
+  const SIZE = 10;
+  const MINES = 15;
+  const [grid, setGrid] = useState<{v: number, revealed: boolean, flagged: boolean}[][]>([]);
+  const [gameOver, setGameOver] = useState(false);
+  const [won, setWon] = useState(false);
+
+  const init = () => {
+    const newGrid = Array(SIZE).fill(null).map(() => Array(SIZE).fill(null).map(() => ({ v: 0, revealed: false, flagged: false })));
+    let minesPlaced = 0;
+    while (minesPlaced < MINES) {
+      const r = Math.floor(Math.random() * SIZE);
+      const c = Math.floor(Math.random() * SIZE);
+      if (newGrid[r][c].v !== -1) {
+        newGrid[r][c].v = -1;
+        minesPlaced++;
+      }
+    }
+    for (let r = 0; r < SIZE; r++) {
+      for (let c = 0; c < SIZE; c++) {
+        if (newGrid[r][c].v === -1) continue;
+        let count = 0;
+        for (let dr = -1; dr <= 1; dr++) {
+          for (let dc = -1; dc <= 1; dc++) {
+            if (r + dr >= 0 && r + dr < SIZE && c + dc >= 0 && c + dc < SIZE && newGrid[r + dr][c + dc].v === -1) count++;
+          }
+        }
+        newGrid[r][c].v = count;
+      }
+    }
+    setGrid(newGrid);
+    setGameOver(false);
+    setWon(false);
+  };
+
+  useEffect(() => init(), []);
+
+  const reveal = (r: number, c: number) => {
+    if (gameOver || won || grid[r][c].revealed || grid[r][c].flagged) return;
+    const newGrid = [...grid.map(row => [...row])];
+    if (newGrid[r][c].v === -1) {
+      setGameOver(true);
+      return;
+    }
+
+    const revealEmpty = (row: number, col: number) => {
+      if (row < 0 || row >= SIZE || col < 0 || col >= SIZE || newGrid[row][col].revealed) return;
+      newGrid[row][col].revealed = true;
+      if (newGrid[row][col].v === 0) {
+        for (let dr = -1; dr <= 1; dr++) {
+          for (let dc = -1; dc <= 1; dc++) revealEmpty(row + dr, col + dc);
+        }
+      }
+    };
+    revealEmpty(r, c);
+    setGrid(newGrid);
+    // Check win
+    if (newGrid.flat().filter(cell => !cell.revealed && cell.v !== -1).length === 0) setWon(true);
+  };
+
+  const toggleFlag = (e: React.MouseEvent, r: number, c: number) => {
+    e.preventDefault();
+    if (gameOver || won || grid[r][c].revealed) return;
+    const newGrid = [...grid.map(row => [...row])];
+    newGrid[r][c].flagged = !newGrid[r][c].flagged;
+    setGrid(newGrid);
+  };
+
+  return (
+    <div className="h-full bg-[#1a1a1a] flex flex-col p-4 select-none">
+      <div className="flex justify-between items-center mb-4 px-2">
+        <div className="text-[10px] font-black text-accent uppercase tracking-widest">System Scan</div>
+        <button onClick={init} className="p-2 hover:bg-white/5 rounded-lg transition-colors">
+          <RotateCw size={14} className={gameOver ? 'text-error' : won ? 'text-accent' : 'text-white/40'} />
+        </button>
+      </div>
+      <div className="flex-1 grid grid-cols-10 gap-1 bg-black/20 p-2 rounded-xl border border-white/5">
+        {grid.map((row, r) => row.map((cell, c) => (
+          <div
+            key={`${r}-${c}`}
+            onClick={() => reveal(r, c)}
+            onContextMenu={(e) => toggleFlag(e, r, c)}
+            className={`aspect-square rounded flex items-center justify-center text-[10px] font-bold cursor-pointer transition-all ${
+              cell.revealed 
+                ? 'bg-white/5 text-white/80' 
+                : 'bg-white/10 hover:bg-white/20 shadow-lg active:scale-95'
+            } ${gameOver && cell.v === -1 ? 'bg-error/30 text-error' : ''}`}
+          >
+            {cell.revealed ? (cell.v === -1 ? 'X' : cell.v || '') : (cell.flagged ? '!' : '')}
+          </div>
+        )))}
+      </div>
+      {gameOver && <div className="mt-4 text-[10px] text-error font-black uppercase text-center tracking-[0.3em] animate-pulse">Exploited</div>}
+      {won && <div className="mt-4 text-[10px] text-accent font-black uppercase text-center tracking-[0.3em] animate-pulse">Secured</div>}
+    </div>
+  );
+}
+
+function SnakeGame() {
+  const [snake, setSnake] = useState([{ x: 10, y: 10 }]);
+  const [food, setFood] = useState({ x: 5, y: 5 });
+  const [dir, setDir] = useState({ x: 0, y: -1 });
+  const [nextDir, setNextDir] = useState({ x: 0, y: -1 });
+  const [gameOver, setGameOver] = useState(false);
+  const [score, setScore] = useState(0);
+  const [highScore, setHighScore] = useState(() => Number(localStorage.getItem('ge-snake-high') || 0));
+
+  useEffect(() => {
+    if (score > highScore) {
+      setHighScore(score);
+      localStorage.setItem('ge-snake-high', String(score));
+    }
+  }, [score, highScore]);
+
+  useEffect(() => {
+    if (gameOver) return;
+    const move = setInterval(() => {
+      setSnake(prev => {
+        const head = { x: prev[0].x + nextDir.x, y: prev[0].y + nextDir.y };
+        setDir(nextDir);
+        
+        if (head.x < 0 || head.x >= 20 || head.y < 0 || head.y >= 20 || prev.some(s => s.x === head.x && s.y === head.y)) {
+          setGameOver(true);
+          return prev;
+        }
+        const newSnake = [head, ...prev];
+        if (head.x === food.x && head.y === food.y) {
+          setScore(s => s + 10);
+          setFood({ x: Math.floor(Math.random() * 20), y: Math.floor(Math.random() * 20) });
+        } else {
+          newSnake.pop();
+        }
+        return newSnake;
+      });
+    }, 120);
+
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowUp' && dir.y === 0) setNextDir({ x: 0, y: -1 });
+      if (e.key === 'ArrowDown' && dir.y === 0) setNextDir({ x: 0, y: 1 });
+      if (e.key === 'ArrowLeft' && dir.x === 0) setNextDir({ x: -1, y: 0 });
+      if (e.key === 'ArrowRight' && dir.x === 0) setNextDir({ x: 1, y: 0 });
+    };
+
+    window.addEventListener('keydown', handleKey);
+    return () => {
+      clearInterval(move);
+      window.removeEventListener('keydown', handleKey);
+    };
+  }, [dir, nextDir, food, gameOver]);
+
+  return (
+    <div className="h-full bg-[#111] flex flex-col p-4 font-mono">
+      <div className="flex justify-between items-center mb-4 px-2">
+        <div className="flex flex-col">
+          <div className="text-[10px] font-bold text-accent uppercase tracking-widest leading-none">Score: {score}</div>
+          <div className="text-[8px] text-white/30 uppercase mt-1">BEST: {highScore}</div>
+        </div>
+        {gameOver && <button onClick={() => { setSnake([{x:10,y:10}]); setGameOver(false); setScore(0); setDir({x:0,y:-1}); setNextDir({x:0,y:-1}); }} className="px-3 py-1 bg-white text-black text-[10px] uppercase font-black italic rounded hover:scale-105 transition-transform">Reboot Cyberspace</button>}
+      </div>
+      <div className="flex-1 bg-black rounded-xl border border-white/5 relative overflow-hidden group">
+        <div className="absolute inset-0 grid grid-cols-20 grid-rows-20">
+          {Array(400).fill(0).map((_, i) => {
+            const x = i % 20;
+            const y = Math.floor(i / 20);
+            const isSnake = snake.some(s => s.x === x && s.y === y);
+            const isHead = snake[0].x === x && snake[0].y === y;
+            const isFood = food.x === x && food.y === y;
+            return (
+              <div key={i} className={`w-full h-full border-[0.5px] border-white/5 ${isSnake ? (isHead ? 'bg-accent scale-110 z-10' : 'bg-accent/60 scale-90') : isFood ? 'bg-error animate-pulse rounded-full scale-50 shadow-[0_0_10px_rgba(248,81,73,0.5)]' : ''} transition-all duration-150`} />
+            );
+          })}
+        </div>
+        {gameOver && (
+          <div className="absolute inset-0 bg-black/90 flex flex-col items-center justify-center text-center p-4 backdrop-blur-sm">
+            <h2 className="text-2xl font-black text-error italic uppercase mb-2 tracking-tighter">Protocol Failed</h2>
+            <p className="text-[10px] text-white/40 uppercase font-black tracking-widest">Memory leak detected. System frozen.</p>
+          </div>
+        )}
+      </div>
+
+      {/* Snake D-Pad */}
+      {!gameOver && (
+        <div className="mt-6 flex justify-center">
+          <div className="grid grid-cols-3 gap-2">
+            <div />
+            <button 
+              onMouseDown={() => { if(dir.y === 0) setNextDir({ x: 0, y: -1 }); }}
+              onTouchStart={(e) => { e.preventDefault(); if(dir.y === 0) setNextDir({ x: 0, y: -1 }); }}
+              className="w-12 h-12 bg-white/5 border border-white/10 rounded-xl flex items-center justify-center text-white active:bg-accent active:text-black transition-all shadow-lg"
+            >
+              <ChevronUp size={24} />
+            </button>
+            <div />
+            
+            <button 
+              onMouseDown={() => { if(dir.x === 0) setNextDir({ x: -1, y: 0 }); }}
+              onTouchStart={(e) => { e.preventDefault(); if(dir.x === 0) setNextDir({ x: -1, y: 0 }); }}
+              className="w-12 h-12 bg-white/5 border border-white/10 rounded-xl flex items-center justify-center text-white active:bg-accent active:text-black transition-all shadow-lg"
+            >
+              <ChevronLeft size={24} />
+            </button>
+            <button 
+              onMouseDown={() => { if(dir.y === 0) setNextDir({ x: 0, y: 1 }); }}
+              onTouchStart={(e) => { e.preventDefault(); if(dir.y === 0) setNextDir({ x: 0, y: 1 }); }}
+              className="w-12 h-12 bg-white/5 border border-white/10 rounded-xl flex items-center justify-center text-white active:bg-accent active:text-black transition-all shadow-lg"
+            >
+              <ChevronDown size={24} />
+            </button>
+            <button 
+              onMouseDown={() => { if(dir.x === 0) setNextDir({ x: 1, y: 0 }); }}
+              onTouchStart={(e) => { e.preventDefault(); if(dir.x === 0) setNextDir({ x: 1, y: 0 }); }}
+              className="w-12 h-12 bg-white/5 border border-white/10 rounded-xl flex items-center justify-center text-white active:bg-accent active:text-black transition-all shadow-lg"
+            >
+              <ChevronRight size={24} />
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
